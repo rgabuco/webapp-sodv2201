@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Programs from "./pages/Programs";
 import Courses from "./pages/Courses";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
 
 function Main() {
   const location = useLocation();
-  const noNavbarPaths = ["/login", "/programs", "/courses", "/about"];
+  const noNavbarPaths = ["/login", "/programs", "/courses", "/about", "/contact"];
   const showNavbar = !noNavbarPaths.includes(location.pathname);
 
   return (
@@ -30,6 +31,7 @@ function Main() {
         <Route path="/programs" element={<Programs />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />
     </div>
