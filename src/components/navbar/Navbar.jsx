@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -16,9 +16,30 @@ import SchoolIcon from "@mui/icons-material/School";
 import BookIcon from "@mui/icons-material/Book";
 import InfoIcon from "@mui/icons-material/Info";
 
-function Navbar({ navText = "Home", loginIcon = "Login", showLoginButton = true }) {
+function Navbar({ loginIcon = "Login", showLoginButton = true }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [navText, setNavText] = useState("Home");
+
+  useEffect(() => {
+    switch (location.pathname) {
+      case "/login":
+        setNavText("Login");
+        break;
+      case "/programs":
+        setNavText("Programs");
+        break;
+      case "/courses":
+        setNavText("Courses");
+        break;
+      case "/about":
+        setNavText("About");
+        break;
+      default:
+        setNavText("Home");
+    }
+  }, [location.pathname]);
 
   const handleDrawerOpen = () => setDrawerOpen(true);
   const handleDrawerClose = () => setDrawerOpen(false);
