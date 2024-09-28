@@ -1,3 +1,9 @@
+IMPORTANT
+
+1. Before running the app, install dependencies using 'npm init -y'
+2. Use 'npm start' to run the webapp
+   NOTE: DO NOT UPLOAD node_modules content in github repo
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
