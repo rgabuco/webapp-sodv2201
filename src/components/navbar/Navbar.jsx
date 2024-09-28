@@ -82,7 +82,7 @@ function Navbar({ loginIcon = "Login", showLoginButton = true }) {
 
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: "#34405E" }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#34405E" }}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu" onMouseEnter={handleDrawerOpen}>
             <MenuIcon />

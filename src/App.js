@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { Box } from "@mui/material";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import Home from "./pages/Home";
@@ -12,7 +13,15 @@ import Contact from "./pages/Contact";
 function App() {
   return (
     <Router>
-      <Main />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+        }}
+      >
+        <Main />
+      </Box>
     </Router>
   );
 }
@@ -23,18 +32,27 @@ function Main() {
   const showNavbar = !noNavbarPaths.includes(location.pathname);
 
   return (
-    <div>
+    <>
       {showNavbar && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/programs" element={<Programs />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          py: 3,
+          mt: 8, // Add margin-top to avoid content being hidden behind the fixed Navbar
+        }}
+      >
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/programs" element={<Programs />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+      </Box>
       <Footer />
-    </div>
+    </>
   );
 }
 
