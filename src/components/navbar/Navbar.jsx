@@ -15,64 +15,55 @@ import HomeIcon from "@mui/icons-material/Home";
 import SchoolIcon from "@mui/icons-material/School";
 import BookIcon from "@mui/icons-material/Book";
 import InfoIcon from "@mui/icons-material/Info";
+import LoginIcon from "@mui/icons-material/Login";
+import { Box } from "@mui/material";
+
+const navItems = [
+  { text: "Home", icon: <HomeIcon />, path: "/" },
+  { text: "Programs", icon: <SchoolIcon />, path: "/programs" },
+  { text: "Courses", icon: <BookIcon />, path: "/courses" },
+  { text: "About", icon: <InfoIcon />, path: "/about" },
+];
+
+const getNavText = (pathname) => {
+  switch (pathname) {
+    case "/login":
+      return "Login";
+    case "/programs":
+      return "Programs";
+    case "/courses":
+      return "Courses";
+    case "/about":
+      return "About";
+    case "/signup":
+      return "Sign Up";
+    default:
+      return "Home";
+  }
+};
 
 function Navbar({ loginIcon = "Login", showLoginButton = true }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const [navText, setNavText] = useState("Home");
+  const [navText, setNavText] = useState(getNavText(location.pathname));
 
   useEffect(() => {
-    switch (location.pathname) {
-      case "/login":
-        setNavText("Login");
-        break;
-      case "/programs":
-        setNavText("Programs");
-        break;
-      case "/courses":
-        setNavText("Courses");
-        break;
-      case "/about":
-        setNavText("About");
-        break;
-      default:
-        setNavText("Home");
-    }
+    setNavText(getNavText(location.pathname));
   }, [location.pathname]);
 
   const handleDrawerOpen = () => setDrawerOpen(true);
   const handleDrawerClose = () => setDrawerOpen(false);
 
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
-
-  const handleHomeClick = () => {
-    navigate("/");
-  };
-
-  const handleProgramsClick = () => {
-    navigate("/programs");
-  };
-
-  const handleCoursesClick = () => {
-    navigate("/courses");
-  };
-
-  const handleAboutClick = () => {
-    navigate("/about");
+  const handleNavigation = (path) => {
+    navigate(path);
+    handleDrawerClose();
   };
 
   const list = () => (
     <List>
-      {[
-        { text: "Home", icon: <HomeIcon />, onClick: handleHomeClick },
-        { text: "Programs", icon: <SchoolIcon />, onClick: handleProgramsClick },
-        { text: "Courses", icon: <BookIcon />, onClick: handleCoursesClick },
-        { text: "About", icon: <InfoIcon />, onClick: handleAboutClick },
-      ].map((item) => (
-        <ListItem button key={item.text} onClick={item.onClick}>
+      {navItems.map((item) => (
+        <ListItem button key={item.text} onClick={() => handleNavigation(item.path)}>
           <ListItemIcon>{item.icon}</ListItemIcon>
           <ListItemText primary={item.text} />
         </ListItem>
@@ -90,11 +81,12 @@ function Navbar({ loginIcon = "Login", showLoginButton = true }) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             {navText}
           </Typography>
-          {showLoginButton && (
-            <Button color="inherit" onClick={handleLoginClick}>
-              {loginIcon}
-            </Button>
-          )}
+          <Button color="inherit" onClick={() => handleNavigation("/login")}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <LoginIcon />
+              <Box sx={{ ml: 1 }}>{loginIcon}</Box>
+            </Box>
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer
