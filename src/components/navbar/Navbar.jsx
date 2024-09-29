@@ -15,6 +15,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import SchoolIcon from "@mui/icons-material/School";
 import BookIcon from "@mui/icons-material/Book";
 import InfoIcon from "@mui/icons-material/Info";
+import LoginIcon from "@mui/icons-material/Login";
+import { Box } from "@mui/material";
 
 const navItems = [
   { text: "Home", icon: <HomeIcon />, path: "/" },
@@ -79,11 +81,12 @@ function Navbar({ loginIcon = "Login", showLoginButton = true }) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             {navText}
           </Typography>
-          {showLoginButton && (
-            <Button color="inherit" onClick={() => handleNavigation("/login")}>
-              {loginIcon}
-            </Button>
-          )}
+          <Button color="inherit" onClick={() => handleNavigation("/login")}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <LoginIcon />
+              <Box sx={{ ml: 1 }}>{loginIcon}</Box>
+            </Box>
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer
