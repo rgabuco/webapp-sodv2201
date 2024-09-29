@@ -1,14 +1,10 @@
-.program-header {
-  display: flex;
-  justify-content: space-between; 
-  align-items: center; 
+html, body {
+  margin: 0;
+  padding: 0;
   width: 100%;
-}
-
-.toggle-icon {
-  font-size: 1.5rem; 
-  font-weight: bold; 
-  color: #34405E;
+  height: 100%;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  font-family: 'Roboto', 'Arial', sans-serif;
 }
 
 
@@ -18,60 +14,62 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 100%; 
+  width: 100%;
+  height: 100vh; /* Takes full viewport height */
+  box-sizing: border-box; 
 }
 
 .category-section {
-  margin-bottom: 20px; 
-  width: 100%; 
+  margin-bottom: 20px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .category-section h2 {
   font-size: 1.5rem;
   color: #2B3C5E;
   margin-bottom: 20px;
-  text-align: center; 
+  text-align: center;
 }
 
 .program-cards {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; 
+  gap: 20px;
   justify-content: center;
-  width: 100%; 
+  width: 100%;
+  max-width: 100%; 
+  box-sizing: border-box;
 }
 
 .program-card {
   background-color: #d3d7db;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
-  width: 600px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 600px;
   margin-bottom: 20px;
-  transition: transform 0.3s ease, max-height 0.3s ease; /* Added transition for height */
+  transition: transform 0.3s ease, max-height 0.3s ease;
   cursor: pointer;
   overflow: hidden;
-  display: block; 
-  text-align: left; 
+  text-align: left;
 }
 
 .program-card.active {
-  max-width: 600px; 
-  min-height: 350px; /* Minimum height for the open card */
+  min-height: 350px;
 }
 
 .program-card:hover {
-  transform: translateY(-10px); /* lift effect on hover */
+  transform: translateY(-10px);
 }
 
 .program-card h3 {
   font-size: 1.2rem;
   color: #34405E;
   margin-bottom: 10px;
-  text-align: left; 
   width: 100%;
 }
 
@@ -92,22 +90,14 @@
 }
 
 .program-card.active .program-details {
-  max-height: 200px; 
-  opacity: 1; /* Fade in the content */
-}
-
-.program-list {
-  list-style: none;
-  padding: 0;
+  max-height: 200px;
+  opacity: 1;
 }
 
 @media (min-width: 768px) {
   .program-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr)); /* All cards maintain the same width */
-    justify-content: center; /* Center the cards horizontally */
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    justify-content: center;
   }
-}
-body {
-  font-family: 'Roboto', 'Arial', sans-serif;
 }
