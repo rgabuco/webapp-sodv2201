@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";  // Import useState and useEffect
-import Navbar from "../components/navbar/Navbar";
-import '../designs/Programs.css';
+import React, { useState, useEffect } from "react"; 
 
-// just an initial display array of programs
+import { Container, Grid, Card, CardContent, Typography, Box } from "@mui/material";
+
+import Navbar from "../components/navbar/Navbar";
+
+// Initial display array of programs
 const initPrograms = [
   {
     code: 'ABCD-2024',
     name: 'Software Development - Diploma',
-    description: ' comprehensive two-year software development diploma program designed to equip students...',
-    term: 'winter',
+    description: 'Comprehensive two-year software development diploma program.',
+    term: 'Winter',
     startDate: 'January 10, 2024',
     endDate: 'May 15, 2026',
     fees: '$9,254 domestic / $27,735 international',
@@ -37,8 +39,8 @@ const initPrograms = [
   {
     code: 'ABCD-2024',
     name: 'Information Technology - Diploma',
-    description: 'A comprehensive two-year software development diploma program designed to equip students...',
-    term: 'winter',
+    description: 'A comprehensive two-year software development diploma program.',
+    term: 'Winter',
     startDate: 'January 10, 2024',
     endDate: 'May 15, 2026',
     fees: '$7,254 domestic / $20,735 international',
@@ -47,81 +49,107 @@ const initPrograms = [
 ];
 
 const Programs = () => {
- 
-  // openPrograms keeps track of which programs are open showing details
-  // the original or default state is an empty object. setOpenPrograms is used to update the state.
-  const [programs, setPrograms] = useState(initPrograms);
-  const [openPrograms, setOpenPrograms] = useState({}); 
-  
-  // useEffect is used to get additional programs added by the admin from localStorage 
+  const [programs, setPrograms] = useState(initPrograms); 
+  // useState manages the programs list, starting with the initial data (initPrograms)
+
+  // useEffect to get admin-added programs from localStorage in the future
+  // Runs after the component renders to check if there are more programs in localStorage
   useEffect(() => {
-  // retrieve saved programs from localStorage or use an empty array if nothing is found
-    const savedPrograms = JSON.parse(localStorage.getItem('programs')) || [];
-  // setPrograms updates the state by combining the initial programs with the saved ones
-    setPrograms(prevPrograms => [...prevPrograms, ...savedPrograms]); 
+    const savedPrograms = JSON.parse(localStorage.getItem('programs')) || []; 
+    // Get any saved programs from localStorage and parse them into an array objects or empty array if none exist
+
+    setPrograms(prevPrograms => [...prevPrograms, ...savedPrograms]);
+    // Update programs state by adding the saved programs to the initial programs
   }, []); 
 
-  // toggleProgram is a function that toggles whether the details of a specific program is visible or not
-  // takes category and index as parameters to identify each program
-  const toggleProgram = (category, index) => {
-    const uniqueKey = `${category}-${index}`; // Creates a unique key for each program
-  // updates the openPrograms state. If the program is open, close it but if it's closed, open it.
-    setOpenPrograms((prevState) => ({
-      ...prevState,
-      [uniqueKey]: !prevState[uniqueKey],
-    }));
-  };
-
-  // Group programs by category
-  // reduce is used to group programs by their category
-  // The acc object holds the categories, and programs are pushed into the category arrays
+  // Group programs by category 
+  // We use the reduce method to collect programs into different categories
   const categorizedPrograms = programs.reduce((acc, program) => {
-    if (!acc[program.category]) {
-      acc[program.category] = [];
+    if (!acc[program.category]) { 
+      acc[program.category] = []; // If the category doesn't exist, create it as an empty array
     }
-    acc[program.category].push(program);
+    acc[program.category].push(program); // Add the program to the correct category
     return acc;
-  }, {});
+  }, {}); // Start with an empty object
 
   return (
-    <div>
+    <Container sx={{ padding: 0, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      {/* content objects are displayed vertically where it takes the full viewport height without any padding*/}
       <Navbar />
-      <div className="programs-container">
-        {Object.keys(categorizedPrograms).map((category) => (
-          <div key={category} className="category-section">
-            <h2>{category}</h2>
-            <div className="Program-cards">
-              {categorizedPrograms[category].map((program, index) => {
-                const uniqueKey = `${category}-${index}`; // Create a unique key for each program
-                return (
-                  <div
-                    key={uniqueKey}
-                    className={`program-card ${openPrograms[uniqueKey] ? "active" : ""}`}
-                    onClick={() => toggleProgram(category, index)}
-                  >
-                    <div className="program-header">
-                      <h3>{program.name}</h3>
-                      <span className="toggle-icon">
-                        {openPrograms[uniqueKey] ? '-' : '+'}
-                      </span>
-                    </div>
-                    {openPrograms[uniqueKey] && (
-                      <div className="program-details">
-                        <p>{program.description}</p>
-                        <p><strong>Term:</strong> {program.term}</p>
-                        <p><strong>Start Date:</strong> {program.startDate}</p>
-                        <p><strong>End Date:</strong> {program.endDate}</p>
-                        <p><strong>Fees:</strong> {program.fees}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+      {/* Display the navigation bar at the top */}
+      
+      <Box sx={{ flexGrow: 1, mt: 2, overflowY: 'auto' }}>
+        {/* A flexible box for the programs that grows or shrinks absed on the space available with margin top of 2X8 =16px, allows scrolling */}
+        <Grid container spacing={3}>
+          {/* Use a grid to organize the programs into rows */}
+          {Object.keys(categorizedPrograms).map((category) => (
+            // Loop over each program category 
+            <Grid item xs={12} key={category}>
+              {/* Create a full width grid item for each category */}
+              <Typography variant="h4" sx={{ marginBottom: 2, textAlign: 'center', color: '#2B3C5E' }}>
+                {category}
+                {/* Display the category name as a heading */}
+              </Typography>
+              <Grid container spacing={3} justifyContent="center">
+                {/* Another grid to hold the program cards inside each category */}
+                {categorizedPrograms[category].map((program, index) => (
+                  <Grid item xs={12} key={index}>
+                    {/* Create a full width grid item for each program */}
+                    <Card sx={{ backgroundColor: "#d3d7db", width: '100%', transition: 'transform 0.3s ease', '&:hover': { transform: 'translateY(-10px)' } }}>
+                      {/* Use a Card to display program details with hover effect */}
+                      <CardContent>
+                        {/* Program Name */}
+                        <Typography variant="h5" gutterBottom sx={{ color: '#34405E' }}>
+                          {program.name}
+                          {/* Display the program name in a large font */}
+                        </Typography>
+
+                        {/* Program Code */}
+                        <Typography variant="body1" sx={{ color: '#34405E', fontWeight: 'bold', marginBottom: '8px' }}>
+                          Code: {program.code}
+                          {/* Show the program code in bold */}
+                        </Typography>
+
+                        {/* Program Description */}
+                        <Typography variant="body2" color="textSecondary" sx={{ marginBottom: 2 }}>
+                          {program.description}
+                          {/* Display the program's brief description */}
+                        </Typography>
+
+                        {/* Program Details Section */}
+                        <Box sx={{ marginTop: 2 }}>
+                        
+                          <Typography variant="body1">
+                            <strong>Term:</strong> {program.term}
+                          </Typography>
+                          <Typography variant="body1">
+                            <strong>Start Date:</strong> {program.startDate}
+                          </Typography>
+                          <Typography variant="body1">
+                            <strong>End Date:</strong> {program.endDate}
+                          </Typography>
+                          <Typography variant="body1">
+                            <strong>Fees:</strong> {program.fees}
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      {/* Footer */}
+      <Box component="footer" sx={{ py: 2, backgroundColor: '#f5f5f5', textAlign: 'center' }}>
+       {/* This Box has 16px padding on the top and bottom(padding-y) */}
+
+        <Typography variant="body2">Your Company © 2023. All rights reserved.</Typography>
+       
+      </Box>
+    </Container>
   );
 };
 
