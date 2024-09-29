@@ -4,7 +4,7 @@ import { Container, Box, TextField, Button, Typography, Link, Card } from "@mui/
 import Navbar from "../components/navbar/Navbar";
 import programsArray from "../utils/data/Programs";
 import usersArray from "../utils/data/Users";
-import HamburgerMenu from "../components/hamburger-menu/HamburgerMenu";
+import LoginButton from "../components/login-button/LoginButton";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -62,7 +62,7 @@ function Login() {
 
   return (
     <div>
-      <Navbar leftMenu={<HamburgerMenu />} showLoginButton={false} />
+      <Navbar rightMenu={<LoginButton />} />
       <Container maxWidth="sm">
         <Box
           sx={{

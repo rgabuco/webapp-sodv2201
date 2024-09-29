@@ -2,9 +2,23 @@ import React, { useState, useEffect } from "react";
 import { Container, Grid, Card, CardContent, Typography, Box } from "@mui/material";
 import Navbar from "../components/navbar/Navbar";
 import programsArray from "../utils/data/Programs";
-import HamburgerMenu from "../components/hamburger-menu/HamburgerMenu";
+import ProfileMenu from "../components/profile-menu/ProfileMenu";
+import LoginButton from "../components/login-button/LoginButton";
 
 const Programs = () => {
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Replace with actual logic to check if the user is logged in
+    const checkUserLoggedIn = () => {
+      // Example: Check local storage or make an API call
+      const loggedIn = localStorage.getItem("userLoggedIn");
+      setUserLoggedIn(loggedIn !== null && loggedIn !== "");
+    };
+
+    checkUserLoggedIn();
+  }, []);
+
   const [programs, setPrograms] = useState(programsArray);
   // useState manages the programs list, starting with the initial data (initPrograms)
 
@@ -31,7 +45,7 @@ const Programs = () => {
   return (
     <Container sx={{ padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       {/* content objects are displayed vertically where it takes the full viewport height without any padding*/}
-      <Navbar leftMenu={<HamburgerMenu />} />
+      <Navbar rightMenu={userLoggedIn ? <ProfileMenu /> : <LoginButton />} />
       {/* Display the navigation bar at the top */}
 
       <Box sx={{ flexGrow: 1, mt: 2, overflowY: "auto" }}>

@@ -46,6 +46,7 @@ function Main() {
       >
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/programs" element={<Programs />} />
           <Route path="/courses" element={<Courses />} />

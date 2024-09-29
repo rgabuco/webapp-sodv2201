@@ -94,7 +94,14 @@ function Signup() {
       <Navbar leftMenu={<HamburgerMenu />} />
       <Container maxWidth="sm">
         <Box sx={{ mt: 4 }}>
-          <Card>
+          <Card
+            sx={{
+              p: 4,
+              width: "100%",
+              border: "1px solid rgba(0, 0, 0, 0.12)", // Outline
+              boxShadow: 3, // Shadow
+            }}
+          >
             <CardContent>
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <AppRegistrationIcon />

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import LoginIcon from "@mui/icons-material/Login";
-import { Box } from "@mui/material";
+import HamburgerMenu from "../hamburger-menu/HamburgerMenu"; // Import HamburgerMenu
 
 const getNavText = (pathname) => {
   switch (pathname) {
@@ -24,18 +22,14 @@ const getNavText = (pathname) => {
   }
 };
 
-function Navbar({ loginIcon = "Login", showLoginButton = true, leftMenu }) {
-  const navigate = useNavigate();
+function Navbar({ leftMenu = <HamburgerMenu />, rightMenu }) {
+  // Set default value for leftMenu
   const location = useLocation();
   const [navText, setNavText] = useState(getNavText(location.pathname));
 
   useEffect(() => {
     setNavText(getNavText(location.pathname));
   }, [location.pathname]);
-
-  const handleNavigation = (path) => {
-    navigate(path);
-  };
 
   return (
     <>
@@ -45,14 +39,7 @@ function Navbar({ loginIcon = "Login", showLoginButton = true, leftMenu }) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             {navText}
           </Typography>
-          {showLoginButton && (
-            <Button color="inherit" onClick={() => handleNavigation("/login")}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <LoginIcon />
-                <Box sx={{ ml: 1 }}>{loginIcon}</Box>
-              </Box>
-            </Button>
-          )}
+          {rightMenu}
         </Toolbar>
       </AppBar>
     </>
