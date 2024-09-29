@@ -142,13 +142,7 @@ const Programs = () => {
         </Grid>
       </Box>
 
-      {/* Footer */}
-      <Box component="footer" sx={{ py: 2, backgroundColor: '#f5f5f5', textAlign: 'center' }}>
-       {/* This Box has 16px padding on the top and bottom(padding-y) */}
-
-        <Typography variant="body2">Your Company © 2023. All rights reserved.</Typography>
-       
-      </Box>
+      
     </Container>
   );
 };
