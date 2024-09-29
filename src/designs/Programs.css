@@ -1,0 +1,113 @@
+.program-header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  width: 100%;
+}
+
+.toggle-icon {
+  font-size: 1.5rem; 
+  font-weight: bold; 
+  color: #34405E;
+}
+
+
+.programs-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%; 
+}
+
+.category-section {
+  margin-bottom: 20px; 
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.category-section h2 {
+  font-size: 1.5rem;
+  color: #2B3C5E;
+  margin-bottom: 20px;
+  text-align: center; 
+}
+
+.program-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; 
+  justify-content: center;
+  width: 100%; 
+}
+
+.program-card {
+  background-color: #d3d7db;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  width: 600px; 
+  margin-bottom: 20px;
+  transition: transform 0.3s ease, max-height 0.3s ease; /* Added transition for height */
+  cursor: pointer;
+  overflow: hidden;
+  display: block; 
+  text-align: left; 
+}
+
+.program-card.active {
+  max-width: 600px; 
+  min-height: 350px; /* Minimum height for the open card */
+}
+
+.program-card:hover {
+  transform: translateY(-10px); /* lift effect on hover */
+}
+
+.program-card h3 {
+  font-size: 1.2rem;
+  color: #34405E;
+  margin-bottom: 10px;
+  text-align: left; 
+  width: 100%;
+}
+
+.program-card p {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.program-card strong {
+  color: #2B3C5E;
+}
+
+.program-details {
+  opacity: 0;
+  max-height: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.program-card.active .program-details {
+  max-height: 200px; 
+  opacity: 1; /* Fade in the content */
+}
+
+.program-list {
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .program-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr)); /* All cards maintain the same width */
+    justify-content: center; /* Center the cards horizontally */
+  }
+}
+body {
+  font-family: 'Roboto', 'Arial', sans-serif;
+}
