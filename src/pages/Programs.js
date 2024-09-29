@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Grid, Card, CardContent, Typography, Box } from "@mui/material";
 import Navbar from "../components/navbar/Navbar";
 import programsArray from "../utils/data/Programs";
+import HamburgerMenu from "../components/hamburger-menu/HamburgerMenu";
 
 const Programs = () => {
   const [programs, setPrograms] = useState(programsArray);
@@ -30,7 +31,7 @@ const Programs = () => {
   return (
     <Container sx={{ padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       {/* content objects are displayed vertically where it takes the full viewport height without any padding*/}
-      <Navbar />
+      <Navbar leftMenu={<HamburgerMenu />} />
       {/* Display the navigation bar at the top */}
 
       <Box sx={{ flexGrow: 1, mt: 2, overflowY: "auto" }}>

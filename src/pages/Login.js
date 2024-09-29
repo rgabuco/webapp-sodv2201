@@ -1,20 +1,68 @@
-import React, { useState } from "react";
-import { Container, Box, TextField, Button, Typography, FormControl, InputLabel, Select, MenuItem, Link, Card } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Container, Box, TextField, Button, Typography, Link, Card } from "@mui/material";
 import Navbar from "../components/navbar/Navbar";
+import programsArray from "../utils/data/Programs";
+import usersArray from "../utils/data/Users";
+import HamburgerMenu from "../components/hamburger-menu/HamburgerMenu";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if programs data exists in localStorage
+    if (!localStorage.getItem("bvc-programs")) {
+      localStorage.setItem("bvc-programs", JSON.stringify(programsArray));
+    }
+
+    // Check if users data exists in localStorage
+    if (!localStorage.getItem("bvc-users")) {
+      localStorage.setItem("bvc-users", JSON.stringify(usersArray));
+    }
+  }, []);
 
   const handleLogin = () => {
-    // Handle login logic here
-    console.log({ username, password, role });
+    const users = JSON.parse(localStorage.getItem("bvc-users"));
+    const user = users.find((user) => user.username === username);
+
+    if (!user) {
+      setUsernameError("Username does not exist.");
+      setPasswordError(""); // Clear password error
+      return;
+    }
+
+    if (user.password !== password) {
+      setPasswordError("Incorrect password.");
+      setUsernameError(""); // Clear username error
+      return;
+    }
+
+    // Handle successful login logic here
+    console.log("Login successful", { username, role });
+    setUsernameError(""); // Clear any previous username error
+    setPasswordError(""); // Clear any previous password error
+
+    // Set localStorage variables
+    try {
+      localStorage.setItem("userLoggedIn", username);
+      localStorage.setItem("isAdministrator", user.isAdmin ? "true" : "false");
+      console.log("LocalStorage variables set successfully");
+    } catch (error) {
+      console.error("Error setting localStorage variables", error);
+    }
+
+    // Navigate to the Dashboard page
+    navigate("/dashboard");
   };
 
   return (
     <div>
-      <Navbar showLoginButton={false} />
+      <Navbar leftMenu={<HamburgerMenu />} showLoginButton={false} />
       <Container maxWidth="sm">
         <Box
           sx={{
@@ -48,6 +96,8 @@ function Login() {
                 autoFocus
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                error={!!usernameError}
+                helperText={usernameError}
               />
               <TextField
                 variant="outlined"
@@ -61,14 +111,9 @@ function Login() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                error={!!passwordError}
+                helperText={passwordError}
               />
-              <FormControl fullWidth sx={{ mt: 2 }}>
-                <InputLabel id="role-label">Login as</InputLabel>
-                <Select labelId="role-label" id="role" value={role} label="Login as" onChange={(e) => setRole(e.target.value)}>
-                  <MenuItem value="student">Student</MenuItem>
-                  <MenuItem value="admin">Admin</MenuItem>
-                </Select>
-              </FormControl>
               <Button type="button" fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }} onClick={handleLogin}>
                 Login
               </Button>

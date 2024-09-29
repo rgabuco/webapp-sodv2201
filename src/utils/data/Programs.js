@@ -1,5 +1,5 @@
 import React from "react";
-// Initial display array of programs
+// Initial dummy data for programs
 const programsArray = [
   {
     code: "ABCD-2024",

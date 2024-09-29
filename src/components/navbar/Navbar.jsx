@@ -2,28 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import HomeIcon from "@mui/icons-material/Home";
-import SchoolIcon from "@mui/icons-material/School";
-import BookIcon from "@mui/icons-material/Book";
-import InfoIcon from "@mui/icons-material/Info";
 import LoginIcon from "@mui/icons-material/Login";
 import { Box } from "@mui/material";
-
-const navItems = [
-  { text: "Home", icon: <HomeIcon />, path: "/" },
-  { text: "Programs", icon: <SchoolIcon />, path: "/programs" },
-  { text: "Courses", icon: <BookIcon />, path: "/courses" },
-  { text: "About", icon: <InfoIcon />, path: "/about" },
-];
 
 const getNavText = (pathname) => {
   switch (pathname) {
@@ -42,8 +24,7 @@ const getNavText = (pathname) => {
   }
 };
 
-function Navbar({ loginIcon = "Login", showLoginButton = true }) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+function Navbar({ loginIcon = "Login", showLoginButton = true, leftMenu }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [navText, setNavText] = useState(getNavText(location.pathname));
@@ -52,54 +33,28 @@ function Navbar({ loginIcon = "Login", showLoginButton = true }) {
     setNavText(getNavText(location.pathname));
   }, [location.pathname]);
 
-  const handleDrawerOpen = () => setDrawerOpen(true);
-  const handleDrawerClose = () => setDrawerOpen(false);
-
   const handleNavigation = (path) => {
     navigate(path);
-    handleDrawerClose();
   };
-
-  const list = () => (
-    <List>
-      {navItems.map((item) => (
-        <ListItem button key={item.text} onClick={() => handleNavigation(item.path)}>
-          <ListItemIcon>{item.icon}</ListItemIcon>
-          <ListItemText primary={item.text} />
-        </ListItem>
-      ))}
-    </List>
-  );
 
   return (
     <>
       <AppBar position="fixed" sx={{ backgroundColor: "#34405E" }}>
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu" onMouseEnter={handleDrawerOpen}>
-            <MenuIcon />
-          </IconButton>
+          {leftMenu}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             {navText}
           </Typography>
-          <Button color="inherit" onClick={() => handleNavigation("/login")}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <LoginIcon />
-              <Box sx={{ ml: 1 }}>{loginIcon}</Box>
-            </Box>
-          </Button>
+          {showLoginButton && (
+            <Button color="inherit" onClick={() => handleNavigation("/login")}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <LoginIcon />
+                <Box sx={{ ml: 1 }}>{loginIcon}</Box>
+              </Box>
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={handleDrawerClose}
-        PaperProps={{
-          sx: { width: 300 }, // Increase the width of the drawer
-          onMouseLeave: handleDrawerClose,
-        }}
-      >
-        <div onMouseEnter={handleDrawerOpen}>{list()}</div>
-      </Drawer>
     </>
   );
 }

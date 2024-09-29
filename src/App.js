@@ -10,6 +10,7 @@ import Courses from "./pages/Courses";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -29,7 +30,7 @@ function App() {
 
 function Main() {
   const location = useLocation();
-  const noNavbarPaths = ["/login", "/programs", "/courses", "/about", "/contact", "/signup"];
+  const noNavbarPaths = ["/login", "/programs", "/courses", "/about", "/contact", "/signup", "/dashboard"];
   const showNavbar = !noNavbarPaths.includes(location.pathname);
 
   return (
@@ -51,6 +52,7 @@ function Main() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Box>
       <Footer />
