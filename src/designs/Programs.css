@@ -9,18 +9,19 @@ html, body {
 
 
 .programs-container {
-  padding: 20px;
+  padding: 0 10px 10px; /* Removed padding from the top */
+  margin-top: -100px; /* Pulled the container up */
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;
-  height: 100vh; /* Takes full viewport height */
+  height: 100vh; 
   box-sizing: border-box; 
 }
 
 .category-section {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -28,10 +29,16 @@ html, body {
   box-sizing: border-box;
 }
 
+.program-header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  width: 100%; 
+}
 .category-section h2 {
   font-size: 1.5rem;
   color: #2B3C5E;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
@@ -45,13 +52,14 @@ html, body {
   box-sizing: border-box;
 }
 
+
 .program-card {
   background-color: #d3d7db;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 600px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   transition: transform 0.3s ease, max-height 0.3s ease;
   cursor: pointer;
   overflow: hidden;
@@ -59,12 +67,13 @@ html, body {
 }
 
 .program-card.active {
-  min-height: 350px;
+  min-height: 300px;
 }
 
 .program-card:hover {
   transform: translateY(-10px);
 }
+
 
 .program-card h3 {
   font-size: 1.2rem;
@@ -92,6 +101,11 @@ html, body {
 .program-card.active .program-details {
   max-height: 200px;
   opacity: 1;
+}
+.toggle-icon {
+  font-size: 1rem; 
+  font-weight: 900; 
+  color: #34405E; 
 }
 
 @media (min-width: 768px) {
