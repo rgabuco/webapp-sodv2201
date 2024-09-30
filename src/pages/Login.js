@@ -60,6 +60,11 @@ function Login() {
     navigate("/dashboard");
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handleLogin();
+  };
+
   return (
     <div>
       <Navbar rightMenu={<LoginButton />} />
@@ -83,7 +88,7 @@ function Login() {
             <Typography component="h1" variant="h5" align="center">
               Login
             </Typography>
-            <Box component="form" sx={{ mt: 3 }}>
+            <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -114,7 +119,7 @@ function Login() {
                 error={!!passwordError}
                 helperText={passwordError}
               />
-              <Button type="button" fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }} onClick={handleLogin}>
+              <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
                 Login
               </Button>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
