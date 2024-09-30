@@ -11,6 +11,14 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import MyCourses from "./pages/MyCourses";
+import AddCourses from "./pages/AddCourses";
+import ContactSupport from "./pages/ContactSupport";
+import AdmCourses from "./pages/AdmCourses";
+import AdmAddCourses from "./pages/AdmAddCourses";
+import StudentList from "./pages/StudentList";
+import Forms from "./pages/Forms";
 
 function App() {
   return (
@@ -30,7 +38,23 @@ function App() {
 
 function Main() {
   const location = useLocation();
-  const noNavbarPaths = ["/login", "/programs", "/courses", "/about", "/contact", "/signup", "/dashboard"];
+  const noNavbarPaths = [
+    "/login",
+    "/programs",
+    "/courses",
+    "/about",
+    "/contact",
+    "/signup",
+    "/dashboard",
+    "/profile",
+    "/my-courses",
+    "/add-courses",
+    "/contact-support",
+    "/adm-courses",
+    "/adm-add-courses",
+    "/student-list",
+    "/forms",
+  ];
   const showNavbar = !noNavbarPaths.includes(location.pathname);
 
   return (
@@ -54,6 +78,14 @@ function Main() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/my-courses" element={<MyCourses />} />
+          <Route path="/add-courses" element={<AddCourses />} />
+          <Route path="/contact-support" element={<ContactSupport />} />
+          <Route path="/adm-courses" element={<AdmCourses />} />
+          <Route path="/adm-add-courses" element={<AdmAddCourses />} />
+          <Route path="/student-list" element={<StudentList />} />
+          <Route path="/forms" element={<Forms />} />
         </Routes>
       </Box>
       <Footer />

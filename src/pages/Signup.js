@@ -20,11 +20,23 @@ import {
 import { PersonAdd as PersonAddIcon } from "@mui/icons-material";
 import Navbar from "../components/navbar/Navbar";
 import programsArray from "../utils/data/Programs";
-import usersArray from "../utils/data/Users";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
-import HamburgerMenu from "../components/hamburger-menu/HamburgerMenu";
+import ProfileMenu from "../components/profile-menu/ProfileMenu";
+import LoginButton from "../components/login-button/LoginButton";
 
 function Signup() {
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Replace with actual logic to check if the user is logged in
+    const checkUserLoggedIn = () => {
+      const loggedIn = localStorage.getItem("userLoggedIn");
+      setUserLoggedIn(loggedIn !== null && loggedIn !== "");
+    };
+
+    checkUserLoggedIn();
+  }, []);
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -91,7 +103,7 @@ function Signup() {
 
   return (
     <div>
-      <Navbar leftMenu={<HamburgerMenu />} />
+      <Navbar rightMenu={userLoggedIn ? <ProfileMenu /> : <LoginButton />} />
       <Container maxWidth="sm">
         <Box sx={{ mt: 4 }}>
           <Card

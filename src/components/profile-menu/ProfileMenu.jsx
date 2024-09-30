@@ -4,7 +4,8 @@ import { IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText } from "
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonIcon from "@mui/icons-material/Person";
-import AddIcon from "@mui/icons-material/Add";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import AddCardIcon from "@mui/icons-material/AddCard";
 import BookIcon from "@mui/icons-material/Book";
 import SupportIcon from "@mui/icons-material/Support";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
@@ -22,8 +23,9 @@ const ProfileMenu = () => {
       setNavItems([
         { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
         { text: "Profile", icon: <PersonIcon />, path: "/profile" },
-        { text: "Courses", icon: <BookIcon />, path: "/courses" },
-        { text: "Add Courses", icon: <AddIcon />, path: "/add-courses" },
+        { text: "Courses", icon: <BookIcon />, path: "/adm-courses" },
+        { text: "Add Courses", icon: <AddCardIcon />, path: "/adm-add-courses" },
+        { text: "Add Users", icon: <PersonAddIcon />, path: "/signup" },
         { text: "Student List", icon: <ListIcon />, path: "/student-list" },
         { text: "Forms", icon: <FormIcon />, path: "/forms" },
         { text: "Logout", icon: <ExitToAppIcon />, path: "/logout" },
@@ -32,8 +34,8 @@ const ProfileMenu = () => {
       setNavItems([
         { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
         { text: "Profile", icon: <PersonIcon />, path: "/profile" },
-        { text: "Add Courses", icon: <AddIcon />, path: "/add-courses" },
         { text: "My Courses", icon: <BookIcon />, path: "/my-courses" },
+        { text: "Add Courses", icon: <AddCardIcon />, path: "/add-courses" },
         { text: "Contact Support", icon: <SupportIcon />, path: "/contact-support" },
         { text: "Logout", icon: <ExitToAppIcon />, path: "/logout" },
       ]);
