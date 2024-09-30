@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, Typography, Box } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonIcon from "@mui/icons-material/Person";
@@ -15,10 +15,14 @@ import FormIcon from "@mui/icons-material/Description";
 const ProfileMenu = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navItems, setNavItems] = useState([]);
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const isAdmin = localStorage.getItem("isAdministrator") === "true";
+    const userLoggedIn = localStorage.getItem("userLoggedIn");
+    setUserName(userLoggedIn);
+
     if (isAdmin) {
       setNavItems([
         { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
@@ -69,9 +73,14 @@ const ProfileMenu = () => {
 
   return (
     <>
-      <IconButton edge="end" color="inherit" aria-label="profile-menu" onMouseEnter={handleDrawerOpen}>
-        <AccountCircleIcon />
-      </IconButton>
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <IconButton edge="end" color="inherit" aria-label="profile-menu" sx={{ marginLeft: "-0.5rem" }} onMouseEnter={handleDrawerOpen}>
+          <AccountCircleIcon />
+        </IconButton>
+        <Typography variant="body2" color="inherit">
+          {userName}
+        </Typography>
+      </Box>
       <Drawer
         anchor="right"
         open={drawerOpen}
