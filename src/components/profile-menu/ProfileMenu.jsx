@@ -73,8 +73,8 @@ const ProfileMenu = () => {
 
   return (
     <>
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-        <IconButton edge="end" color="inherit" aria-label="profile-menu" sx={{ marginLeft: "-0.5rem" }} onMouseEnter={handleDrawerOpen}>
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" onMouseEnter={handleDrawerOpen}>
+        <IconButton edge="end" color="inherit" aria-label="profile-menu" sx={{ marginLeft: "-0.5rem" }}>
           <AccountCircleIcon />
         </IconButton>
         <Typography variant="body2" color="inherit">
