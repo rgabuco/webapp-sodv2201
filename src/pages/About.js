@@ -19,39 +19,45 @@ function About() {
   return (
     <div>
       <Navbar rightMenu={userLoggedIn ? <ProfileMenu /> : <LoginButton />} />
-      <Container sx={{ padding: 0, display: "flex", flexDirection: "column"}}>
+      
+      <Container sx={{ padding: 0, display: "flex", flexDirection: "column",  minHeight: "15vh" }}>
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 2, color: "#34405E"}}>
-          <Typography variant="h3">About Us</Typography>
+          <Typography variant="h3">About</Typography>
         </Box>
-        </Container>
 
-      <Container sx={{ marginTop: "43vh", padding: 0, display: "flex", flexDirection: "column", minHeight: "20vh" }}>
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', textAlign: 'center', alignItems: 'center', padding: 2, color: "#34405E" }}>
+          <Typography variant="h5">Welcome to our Student Registration App, designed to simplify and enhance your academic journey! 
+            Our user-friendly platform streamlines the registration process, allowing students to easily enroll in courses, 
+            manage their schedules, and access essential information all in one place.</Typography>
+        </Box>
+      </Container>
+
+      <Container sx={{ marginTop: "35vh", padding: 0, display: "flex", flexDirection: "column"}}>
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 2, color: "#34405E" }}>
           <Typography variant="h4">The Team</Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-around', padding: 2, color: "#34405E"}}>
-          <Box textAlign="center">
-            <Typography variant="h5">Rudy Gabuco </Typography>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-around', padding: 2, color: "#34405E" }}>
+          <Box textAlign="center" sx={{ marginBottom: { xs: 2, sm: 0 } }}>
+            <Typography variant="h5">Rudy Gabuco</Typography>
             <Typography variant="body2">Role: Developer</Typography>
           </Box>
-          <Box textAlign="center">
+          <Box textAlign="center" sx={{ marginBottom: { xs: 2, sm: 0 } }}>
             <Typography variant="h5">Jensen Castro</Typography>
             <Typography variant="body2">Role: Developer</Typography>
           </Box>
-          <Box textAlign="center">
+          <Box textAlign="center" sx={{ marginBottom: { xs: 2, sm: 0 } }}>
             <Typography variant="h5">Ellah Cuna</Typography>
             <Typography variant="body2">Role: Developer</Typography>
           </Box>
-          <Box textAlign="center">
+          <Box textAlign="center" sx={{ marginBottom: { xs: 2, sm: 0 } }}>
             <Typography variant="h5">Paul Lipnica</Typography>
             <Typography variant="body2">Role: Developer</Typography>
           </Box>
-          <Box textAlign="center">
+          <Box textAlign="center" sx={{ marginBottom: { xs: 2, sm: 0 } }}>
             <Typography variant="h5">Phillip Evans Montinola</Typography>
             <Typography variant="body2">Role: Developer</Typography>
           </Box>
-
         </Box>
       </Container>
     </div>
