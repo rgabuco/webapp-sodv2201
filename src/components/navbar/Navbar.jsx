@@ -17,6 +17,24 @@ const getNavText = (pathname) => {
       return "About";
     case "/signup":
       return "Sign Up";
+    case "/profile":
+      return "Profile";
+    case "/dashboard":
+      return "Dashboard";
+    case "/adm-courses":
+      return "Courses";
+    case "/adm-add-courses":
+      return "Add Courses";
+    case "/student-list":
+      return "Student List";
+    case "/forms":
+      return "Forms";
+    case "/my-courses":
+      return "My Courses";
+    case "/add-courses":
+      return "Add Courses";
+    case "/contact-support":
+      return "Contact Support";
     default:
       return "Home";
   }
