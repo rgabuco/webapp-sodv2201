@@ -1,6 +1,6 @@
 IMPORTANT
 
-1. Before running the app, install dependencies using 'npm init -y'
+1. Before running the app, install dependencies using 'npm install'
 2. Use 'npm start' to run the webapp
    NOTE: DO NOT UPLOAD node_modules content in github repo
 
