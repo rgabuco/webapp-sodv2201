@@ -17,10 +17,10 @@ function Footer() {
         <Stack direction={{ xs: "column", sm: "row" }} spacing={4} justifyContent="space-evenly">
           <Box>
             <Typography variant="h6" color="text.primary" gutterBottom>
-              Your Company
+              Bow Space
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              © 2023 Your Company. All rights reserved.
+              © 2023 Bow Space. All rights reserved.
             </Typography>
           </Box>
           <Box>
