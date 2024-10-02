@@ -23,12 +23,17 @@ import programsArray from "../utils/data/Programs";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import LoginButton from "../components/login-button/LoginButton";
+import SuccessfulSignUp from "../components/modal-successful-signup/SuccessfulSignUp";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 function Signup() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [openModal, setOpenModal] = useState(false); // State to control modal visibility
+  const [newUserDetails, setNewUserDetails] = useState({}); // State to store new user details
+  const [usernameError, setUsernameError] = useState(""); // State to store username error
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
-    // Replace with actual logic to check if the user is logged in
     const checkUserLoggedIn = () => {
       const loggedIn = localStorage.getItem("userLoggedIn");
       setUserLoggedIn(loggedIn !== null && loggedIn !== "");
@@ -54,7 +59,6 @@ function Signup() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Retrieve isAdministrator value from localStorage
     const isAdministrator = localStorage.getItem("isAdministrator") === "true";
     setIsAdmin(isAdministrator);
   }, []);
@@ -67,7 +71,6 @@ function Signup() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validate phone number
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(formData.phone)) {
       setPhoneError("Phone number must be 10 digits.");
@@ -76,29 +79,41 @@ function Signup() {
 
     setPhoneError("");
 
-    // Retrieve existing users from localStorage
     const existingUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
+
+    // Check for duplicate username
+    const duplicateUser = existingUsers.find((user) => user.username === formData.username);
+    if (duplicateUser) {
+      setUsernameError("Username already exists.");
+      return;
+    }
+
+    setUsernameError("");
 
     const newUser = {
       id: existingUsers.length + 1,
       ...formData,
     };
 
-    // Add new user to the existing users array
     existingUsers.push(newUser);
-
-    // Update localStorage with the new users array
     localStorage.setItem("bvc-users", JSON.stringify(existingUsers));
 
     console.log("User added:", newUser);
-    // Optionally, you can redirect the user or show a success message here
+
+    // Store new user details and open the modal
+    setNewUserDetails({
+      accountType: formData.isAdmin === "true" ? "Admin" : "Student",
+      username: formData.username,
+      accountID: newUser.id,
+    });
+    console.log("Opening modal...");
+    setOpenModal(true); // This should open the modal
   };
 
   const countryCodes = [
     { code: "+1", country: "United States/Canada" },
     { code: "+44", country: "United Kingdom" },
     { code: "+91", country: "India" },
-    // Add more country codes as needed
   ];
 
   return (
@@ -110,8 +125,8 @@ function Signup() {
             sx={{
               p: 4,
               width: "100%",
-              border: "1px solid rgba(0, 0, 0, 0.12)", // Outline
-              boxShadow: 3, // Shadow
+              border: "1px solid rgba(0, 0, 0, 0.12)",
+              boxShadow: 3,
             }}
           >
             <CardContent>
@@ -122,7 +137,7 @@ function Signup() {
                 </Typography>
               </Box>
               <form onSubmit={handleSubmit}>
-                <TextField label="Username" name="username" value={formData.username} onChange={handleChange} fullWidth margin="normal" required />
+                <TextField label="Username" name="username" value={formData.username} onChange={handleChange} fullWidth margin="normal" required error={!!usernameError} helperText={usernameError} />
                 <TextField label="Password" name="password" type="password" value={formData.password} onChange={handleChange} fullWidth margin="normal" required />
                 <TextField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} fullWidth margin="normal" required />
                 <TextField label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} fullWidth margin="normal" required />
@@ -175,6 +190,15 @@ function Signup() {
           </Card>
         </Box>
       </Container>
+      <SuccessfulSignUp
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        accountType={newUserDetails.accountType}
+        username={newUserDetails.username}
+        accountID={newUserDetails.accountID}
+        userLoggedIn={userLoggedIn} // Pass userLoggedIn as a prop
+        navigate={navigate} // Pass navigate as a prop
+      />
     </div>
   );
 }
