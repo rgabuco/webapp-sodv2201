@@ -5,6 +5,7 @@ import Navbar from "../components/navbar/Navbar";
 import programsArray from "../utils/data/Programs";
 import usersArray from "../utils/data/Users";
 import LoginButton from "../components/login-button/LoginButton";
+import coursesArray from "../utils/data/Courses";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -19,7 +20,10 @@ function Login() {
     if (!localStorage.getItem("bvc-programs")) {
       localStorage.setItem("bvc-programs", JSON.stringify(programsArray));
     }
-
+    // Check if courses data exists in localStorage
+    if (!localStorage.getItem("bvc-courses")) {
+      localStorage.setItem("bvc-courses", JSON.stringify(coursesArray));
+    }
     // Check if users data exists in localStorage
     if (!localStorage.getItem("bvc-users")) {
       localStorage.setItem("bvc-users", JSON.stringify(usersArray));
