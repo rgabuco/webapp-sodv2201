@@ -1,5 +1,3 @@
-// 
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar/Navbar'; 
 import LoginButton from '../components/login-button/LoginButton'; 
@@ -9,7 +7,7 @@ import normalImage from '../resources/img.png';
 
 function About() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [hovered, setHovered] = useState({}); // State to track hover for each member
+  const [hovered, setHovered] = useState({});
 
   useEffect(() => {
     const checkUserLoggedIn = () => {
@@ -48,19 +46,21 @@ function About() {
 
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-around', padding: 2, color: "#34405E" }}>
           {[
-            { name: "Rudy Gabuco", hoverImage: "path/to/rudy-hover.jpg",image: normalImage  },
-            { name: "Jensen Castro", hoverImage: "path/to/jensen-hover.jpg",image: normalImage},
-            { name: "Ellah Cuna", hoverImage: "path/to/ellah-hover.jpg",image: normalImage },
-            { name: "Paul Lipnica", hoverImage: "path/to/paul-hover.jpg" ,image: normalImage},
-            { name: "Phillip Evans Montinola", hoverImage: "path/to/phillipevans-hover.jpg",image: normalImage },
-          ].map(({ name, hoverImage, image}) => (
+            { name: "Rudy Gabuco", hoverImage: "path/to/rudy-hover.jpg", image: normalImage, initials: "RG" },
+            { name: "Jensen Castro", hoverImage: "path/to/jensen-hover.jpg", image: normalImage, initials: "JC" },
+            { name: "Ellah Cuna", hoverImage: "path/to/ellah-hover.jpg", image: normalImage, initials: "EC" },
+            { name: "Paul Lipnica", hoverImage: "path/to/paul-hover.jpg", image: normalImage, initials: "PL" },
+            { name: "Phillip Evans Montinola", hoverImage: "path/to/phillipevans-hover.jpg", image: normalImage, initials: "PM" },
+          ].map(({ name, hoverImage, image, initials }) => (
             <Stack key={name} spacing={1} alignItems="center" sx={{ marginBottom: { xs: 2, sm: 0 } }}>
               <Avatar
-                alt={name}
-                src={hovered[name] ? image : hoverImage}
                 sx={{
                   width: 60,
                   height: 60,
+                  backgroundColor: "#34405E",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   transition: 'transform 0.3s, box-shadow 0.3s',
                   '&:hover': {
                     transform: 'scale(1.1)',
@@ -69,7 +69,14 @@ function About() {
                 }}
                 onMouseEnter={() => handleMouseEnter(name)}
                 onMouseLeave={() => handleMouseLeave(name)}
-              />
+                src={hovered[name] ? image : null} 
+              >
+                {!hovered[name] && (
+                  <Typography variant="body2" sx={{ color: "white", fontWeight: 'bold' }}>
+                    {initials}
+                  </Typography>
+                )}
+              </Avatar>
               <Typography variant="h5">{name}</Typography>
               <Typography variant="body2">Role: Developer</Typography>
             </Stack>
