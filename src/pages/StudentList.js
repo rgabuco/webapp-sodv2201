@@ -14,7 +14,22 @@ function StudentList() {
   const [anchorElColumns, setAnchorElColumns] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState("");
-  
+
+  const [clickedIcons, setClickedIcons] = useState({
+    filter: false,
+    search: false,
+    columns: false,
+    reset: false,
+  });
+
+  // Handle icon click and toggle its color
+  const handleIconClick = (iconName) => {
+    setClickedIcons((prevState) => ({
+      ...prevState,
+      [iconName]: !prevState[iconName],
+    }));
+  };
+
   // State to manage visibility of table columns
   const [columnVisibility, setColumnVisibility] = useState({
     firstName: true,
@@ -22,7 +37,17 @@ function StudentList() {
     email: true,
     phone: true,
     department: true,
-    program: true
+    program: true,
+  });
+
+  // State for filter values
+  const [filterValues, setFilterValues] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    department: "",
+    program: "",
   });
 
   // Open Popovers
@@ -40,32 +65,76 @@ function StudentList() {
   // Handle search query change
   const handleSearchChange = (event) => setSearchQuery(event.target.value);
 
-  // Toggle column visibility
-  const handleColumnVisibilityToggle = (column) => {
-    setColumnVisibility(prevState => ({
+  // Handle filter values change
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilterValues((prevState) => ({
       ...prevState,
-      [column]: !prevState[column]
+      [name]: value,
     }));
   };
 
-  // Filter users based on the search query
+  // Toggle column visibility
+  const handleColumnVisibilityToggle = (column) => {
+    setColumnVisibility((prevState) => ({
+      ...prevState,
+      [column]: !prevState[column],
+    }));
+  };
+
+  // Apply filters and search query
   const filteredUsers = usersArray.filter((student) => {
     return (
-      student.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchQuery.toLowerCase())
+      // Search Filter
+      (student.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
+
+      // Filter Fields (only apply if not empty)
+      (filterValues.firstName === "" || student.firstName.toLowerCase().includes(filterValues.firstName.toLowerCase())) &&
+      (filterValues.lastName === "" || student.lastName.toLowerCase().includes(filterValues.lastName.toLowerCase())) &&
+      (filterValues.email === "" || student.email.toLowerCase().includes(filterValues.email.toLowerCase())) &&
+      (filterValues.phone === "" || student.phone.toLowerCase().includes(filterValues.phone.toLowerCase())) &&
+      (filterValues.department === "" || student.department.toLowerCase().includes(filterValues.department.toLowerCase())) &&
+      (filterValues.program === "" || student.program.toLowerCase().includes(filterValues.program.toLowerCase()))
     );
   });
+
+  // Reset Filters Function
+  const handleResetFilters = () => {
+    setSearchQuery("");  // Reset search query
+    setColumnVisibility({
+      firstName: true,
+      lastName: true,
+      email: true,
+      phone: true,
+      department: true,
+      program: true,
+    });  // Reset column visibility
+    setFilterValues({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      department: "",
+      program: "",
+    });  // Reset filter values
+    handleClosePopover();  // Close any open popovers
+    setClickedIcons({
+      filter: false,
+      search: false,
+      columns: false,
+      reset: false,
+    });
+  };
 
   return (
     <div>
       <Navbar rightMenu={<ProfileMenu />} />
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
+      <Container maxWidth="lg" sx={{ mt: 5, color: "#34405E"}}>
+        <Typography variant="h3" gutterBottom sx={{ mb: 3, textAlign: 'center'}}>
           Student Information List
         </Typography>
-
-        
 
         {/* Filter Popover */}
         <Popover
@@ -82,12 +151,18 @@ function StudentList() {
           }}
         >
           <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', rowGap: 1 }}>
-            <TextField label="First Name" variant="outlined" size="small" fullWidth />
-            <TextField label="Last Name" variant="outlined" size="small" fullWidth />
-            <TextField label="Email" variant="outlined" size="small" fullWidth />
-            <TextField label="Phone" variant="outlined" size="small" fullWidth />
-            <TextField label="Department" variant="outlined" size="small" fullWidth />
-            <TextField label="Program" variant="outlined" size="small" fullWidth />
+            {["firstName", "lastName", "email", "phone", "department", "program"].map((field) => (
+              <TextField
+                key={field}
+                label={field.charAt(0).toUpperCase() + field.slice(1)}
+                variant="outlined"
+                size="small"
+                fullWidth
+                name={field}
+                value={filterValues[field]}
+                onChange={handleFilterChange}
+              />
+            ))}
             <Box sx={{ textAlign: 'right', mt: 2 }}>
               <Button onClick={handleClosePopover} color="primary">Apply</Button>
             </Box>
@@ -158,26 +233,80 @@ function StudentList() {
 
         {/* Table Section */}
         <TableContainer component={Paper}>
+          {/* Icon Buttons for Filter, Search, Show Columns, and Reset */}
+          <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/* Typography aligned to the left */}
+            <Typography variant="h5" sx={{ mt: 2, ml: 3, color: "#34405E"}}>
+              BVC Students
+            </Typography>
 
-          {/* Icon Buttons for Filter, Search, and Show Columns */}
-          <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-            {/* Filter Icon */}
-            <IconButton color="primary" onClick={handleOpenFilter} aria-label="filter">
-              <FilterListIcon />
-            </IconButton>
+            {/* Icons aligned to the right */}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {/* Filter Icon */}
+              <IconButton
+                color={clickedIcons.filter ? "primary" : "default"}
+                onClick={(e) => {
+                  handleIconClick('filter');
+                  handleOpenFilter(e);
+                }}
+                aria-label="filter"
+              >
+                <FilterListIcon />
+              </IconButton>
 
-            {/* Search Icon */}
-            <IconButton color="primary" onClick={handleOpenSearch} aria-label="search">
-              <SearchIcon />
-            </IconButton>
+              {/* Search Icon */}
+              <IconButton
+                color={clickedIcons.search ? "primary" : "default"}
+                onClick={(e) => {
+                  handleIconClick('search');
+                  handleOpenSearch(e);
+                }}
+                aria-label="search"
+              >
+                <SearchIcon />
+              </IconButton>
 
-            {/* Show Columns Icon (3 blocks) */}
-            <IconButton color="primary" onClick={handleOpenColumns} aria-label="show columns">
-              <ViewColumnIcon />
-            </IconButton>
+              {/* Show Columns Icon (3 blocks) */}
+              <IconButton
+                color={clickedIcons.columns ? "primary" : "default"}
+                onClick={(e) => {
+                  handleIconClick('columns');
+                  handleOpenColumns(e);
+                }}
+                aria-label="show columns"
+              >
+                <ViewColumnIcon />
+              </IconButton>
+
+              {/* Reset Filters Button */}
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleResetFilters}
+                sx={{ ml: 1 }}
+              >
+                Reset
+              </Button>
+            </Box>
           </Box>
 
-          <Table aria-label="student information table">
+          <Table 
+            aria-label="student information table"
+            sx={{
+              color: "#34405E", 
+              '& .MuiTableCell-root': { // Apply color to all table cells
+                color: "#34405E"
+              },
+              '& .MuiTableHead-root': { // Apply color to table header
+                backgroundColor: "#f5f5f5", // Optional: you can add background color for header row
+              },
+              '& .MuiTableRow-root': { // Optional: Apply row hover effect
+                '&:hover': {
+                  backgroundColor: '#f1f1f1',
+                },
+              },
+            }}
+          >
             <TableHead>
               <TableRow>
                 {columnVisibility.firstName && <TableCell align="center"><strong>First Name</strong></TableCell>}
@@ -201,6 +330,7 @@ function StudentList() {
               ))}
             </TableBody>
           </Table>
+
         </TableContainer>
       </Container>
     </div>
