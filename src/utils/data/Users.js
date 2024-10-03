@@ -1,7 +1,7 @@
 import React from "react";
 
 // Initial dummy data for users
-const usersArray = [
+export const usersArray = [
   {
     id: 1,
     username: "jdoe",
