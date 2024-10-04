@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar/Navbar";
 import LoginButton from "../components/login-button/LoginButton";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
+import { Container, Typography } from "@mui/material";
+import ContactForm from "../components/contact-form/ContactForm";
 
 function Contact() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -20,9 +22,14 @@ function Contact() {
   return (
     <div>
       <Navbar rightMenu={userLoggedIn ? <ProfileMenu /> : <LoginButton />} />
-      <h1>Contact Page</h1>
-      {/* Add your home content here */}
+      <Container maxWidth="lg" sx={{ mt: 3, color: "#34405E" }}>
+      <Typography variant="h3" gutterBottom sx={{ mb: 5, textAlign: "center", color: "#34405E"}}>
+          Ask Us A Question
+        </Typography>
+      </Container>
+      <ContactForm/>
     </div>
+    
   );
 }
 
