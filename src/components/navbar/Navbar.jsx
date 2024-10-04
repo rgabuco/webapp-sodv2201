@@ -35,6 +35,8 @@ const getNavText = (pathname) => {
       return "Add Courses";
     case "/contact-support":
       return "Contact Support";
+    case "/contact":
+      return "Contact";
     default:
       return "Home";
   }
