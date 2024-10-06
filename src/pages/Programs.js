@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Grid, Card, CardContent, Typography, Box } from "@mui/material";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import Navbar from "../components/navbar/Navbar";
 import programsArray from "../utils/data/Programs";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
@@ -9,98 +11,120 @@ const Programs = () => {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Replace with actual logic to check if the user is logged in
+    // Check if the user is logged in based on stored session data
     const checkUserLoggedIn = () => {
-      // Example: Check local storage or make an API call
       const loggedIn = localStorage.getItem("userLoggedIn");
       setUserLoggedIn(loggedIn !== null && loggedIn !== "");
     };
-
     checkUserLoggedIn();
   }, []);
-
+  
   const [programs, setPrograms] = useState(programsArray);
-  // useState manages the programs list, starting with the initial data (initPrograms)
 
-  // useEffect to get admin-added programs from localStorage in the future
-  // Runs after the component renders to check if there are more programs in localStorage
   useEffect(() => {
+    // Check if any programs were saved in localStorage for programs that is added by admins
     const savedPrograms = JSON.parse(localStorage.getItem("programs")) || [];
-    // Get any saved programs from localStorage and parse them into an array objects or empty array if none exist
-
     setPrograms((prevPrograms) => [...prevPrograms, ...savedPrograms]);
-    // Update programs state by adding the saved programs to the initial programs
   }, []);
-
-  // Group programs by category
-  // We use the reduce method to collect programs into different categories
+   //categorizes program
   const categorizedPrograms = programs.reduce((acc, program) => {
     if (!acc[program.category]) {
-      acc[program.category] = []; // If the category doesn't exist, create it as an empty array
+      acc[program.category] = [];
     }
-    acc[program.category].push(program); // Add the program to the correct category
+    acc[program.category].push(program);
     return acc;
-  }, {}); // Start with an empty object
+  }, {});
 
   return (
     <Container sx={{ padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      {/* content objects are displayed vertically where it takes the full viewport height without any padding*/}
+      {/* Container for the whole page */}
+      {/*this allows flexible layouts, makes the items inside position vertically, 
+      ensures the container takes the full height of viewport even with little content*/}
+
       <Navbar rightMenu={userLoggedIn ? <ProfileMenu /> : <LoginButton />} />
-      {/* Display the navigation bar at the top */}
+      {/* The navbar shows the profile menu if the user is logged in or the login button if not */}
 
       <Box sx={{ flexGrow: 1, mt: 2, overflowY: "auto" }}>
-        {/* A flexible box for the programs that grows or shrinks absed on the space available with margin top of 2X8 =16px, allows scrolling */}
+        {/* Box is helps manage the spacing and positioning inside the container for layout.
+        this helps box take up as much vertical space as possible inside the container 
+        has a top margin of 2 * 8px = 16px and allows vertical scrolling if the content is longer than the viewport height.*/}
+        
         <Grid container spacing={3}>
-          {/* Use a grid to organize the programs into rows */}
+          {/*  Grid container inside the card to align program details, spacing=3 adds 24px (3 * 8px) of space between each grid item.*/}
+          
           {Object.keys(categorizedPrograms).map((category) => (
-            // Loop over each program category
-            <Grid item xs={12} key={category}>
-              {/* Create a full width grid item for each category */}
+          
+          <Grid item xs={12} key={category}>
+              {/* This item takes the full width of the row on extra-small screens */}
               <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center", color: "#2B3C5E" }}>
                 {category}
-                {/* Display the category name as a heading */}
               </Typography>
+
               <Grid container spacing={3} justifyContent="center">
-                {/* Another grid to hold the program cards inside each category */}
                 {categorizedPrograms[category].map((program, index) => (
                   <Grid item xs={12} key={index}>
-                    {/* Create a full width grid item for each program */}
-                    <Card sx={{ backgroundColor: "#d3d7db", width: "100%", transition: "transform 0.3s ease", "&:hover": { transform: "translateY(-10px)" } }}>
-                      {/* Use a Card to display program details with hover effect */}
+                    {/* Each program card takes up the full width (12 columns) on all screen sizes */}
+                    
+                    <Card sx={{ backgroundColor: "#f5f5f5", transition: "transform 0.3s ease", "&:hover": { transform: "translateY(-10px)", boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)" } }}>
                       <CardContent>
-                        {/* Program Name */}
-                        <Typography variant="h5" gutterBottom sx={{ color: "#34405E" }}>
-                          {program.name}
-                          {/* Display the program name in a large font */}
-                        </Typography>
+                        <Grid container spacing={3}>
+                          {/* Program Name and Code */}
+                         
+                          <Grid item xs={12}>
+                          {/*Full width for program name and code on all screen sizes (12 columns).*/ } 
+                            <Typography variant="h5" sx={{ textAlign: "left", fontWeight: "bold", color: "#34405E" }}>
+                              {program.name}
+                            </Typography>
 
-                        {/* Program Code */}
-                        <Typography variant="body1" sx={{ color: "#34405E", fontWeight: "bold", marginBottom: "8px" }}>
-                          Code: {program.code}
-                          {/* Show the program code in bold */}
-                        </Typography>
+                            <Typography variant="body1" sx={{ color: "#34405E", fontWeight: "bold", marginBottom: "8px" }}>
+                              Code: {program.code}
+                            </Typography>
+                          </Grid>
 
-                        {/* Program Description */}
-                        <Typography variant="body2" color="textSecondary" sx={{ marginBottom: 2 }}>
-                          {program.description}
-                          {/* Display the program's brief description */}
-                        </Typography>
+                          {/* Left Side: Program Description */}
+                          <Grid item xs={12} md={6}>
+                            {/* xs={12} makes this full width on small screens, md={6} makes it half of the width on larger screens */}
+                            <Typography variant="body2" sx={{ marginBottom: 2, color: "#707070" }}>
+                              {program.description}
+                            </Typography>
+                          </Grid>
 
-                        {/* Program Details Section */}
-                        <Box sx={{ marginTop: 2 }}>
-                          <Typography variant="body1">
-                            <strong>Term:</strong> {program.term}
-                          </Typography>
-                          <Typography variant="body1">
-                            <strong>Start Date:</strong> {program.startDate}
-                          </Typography>
-                          <Typography variant="body1">
-                            <strong>End Date:</strong> {program.endDate}
-                          </Typography>
-                          <Typography variant="body1">
-                            <strong>Fees:</strong> {program.fees}
-                          </Typography>
-                        </Box>
+                          {/* Right Side: Program Details */}
+                          <Grid item xs={12} md={6}>
+                            {/* xs={12} for full-width on small screens, md={6} for half of the width on larger screens */}
+                            {/* Program Details: Start Date, End Date, Term, Fees */}
+
+                            <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
+                             {/* Flexbox to align items horizontally */}
+
+                              <CalendarTodayIcon sx={{ marginRight: 1, color: "#1976d2" }} />
+                              <Typography variant="body1" sx={{ color: "#34405E" }}>
+                                <strong>Start Date:</strong> {program.startDate}
+                              </Typography>
+                            </Box>
+
+
+                            <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
+                              <CalendarTodayIcon sx={{ marginRight: 1, color: "#1976d2" }} />
+                              <Typography variant="body1" sx={{ color: "#34405E" }}>
+                                <strong>End Date:</strong> {program.endDate}
+                              </Typography>
+                            </Box>
+
+
+                            <Typography variant="body1" sx={{ color: "#34405E", marginBottom: 2 }}>
+                              <strong>Term:</strong> {program.term}
+                            </Typography>
+
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                              <AttachMoneyIcon sx={{ marginRight: 1, color: "#43a047" }} />
+                              <Typography variant="body1" sx={{ color: "#34405E" }}>
+                                <strong>Fees:</strong> {program.fees}
+                              </Typography>
+                            </Box>
+                            
+                          </Grid>
+                        </Grid>
                       </CardContent>
                     </Card>
                   </Grid>

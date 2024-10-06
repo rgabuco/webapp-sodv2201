@@ -2,7 +2,7 @@ import React from "react";
 // Initial dummy data for programs
 const programsArray = [
   {
-    code: "SDDBVC-2024",
+    code: "SDDBVC-2025",
     name: "Software Development Diploma",
     description: "A comprehensive two-year diploma program that equips learners with essential software development skills, focusing on web, mobile, and database applications.",
     term: "Winter",
@@ -12,7 +12,7 @@ const programsArray = [
     category: "Software Development Programs",
   },
   {
-    code: "SDPBVC-2024",
+    code: "SDPBVC-2025",
     name: "Software Development Post-Diploma",
     description: "A comprehensive one-year post-diploma program that equips learners with essential software development skills, focusing on web, mobile, and database applications.",
     term: "Winter",
@@ -23,7 +23,7 @@ const programsArray = [
     
   },
   {
-    code: "SDABVC-2024",
+    code: "SDABVC-2025",
     name: "Accelerated Software Development Certificate",
     description: "A comprehensive six-month program that equips learners with essential software development skills, focusing on web, mobile, and database applications",
     term: "Winter",
