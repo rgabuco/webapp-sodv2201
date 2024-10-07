@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Typography, Stack } from '@mui/material';
 
-const TeamMember = ({ name, image, initials, onMouseEnter, onMouseLeave, hovered }) => (
+const TeamMember = ({ name, image, initials, role, onMouseEnter, onMouseLeave, hovered }) => (
   <Stack spacing={1} alignItems="center">
     <Avatar
       sx={{
@@ -20,6 +20,7 @@ const TeamMember = ({ name, image, initials, onMouseEnter, onMouseLeave, hovered
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       src={hovered ? image : null}
+      alt={hovered ? name : `${initials} - ${name}`} 
     >
       {!hovered && (
         <Typography variant="body2" sx={{ color: "white", fontWeight: 'bold' }}>
@@ -27,8 +28,8 @@ const TeamMember = ({ name, image, initials, onMouseEnter, onMouseLeave, hovered
         </Typography>
       )}
     </Avatar>
-    <Typography variant="h5">{name}</Typography>
-    <Typography variant="body2">Role: Developer</Typography>
+    <Typography variant="h6">{name}</Typography>
+    <Typography variant="body2">{role || "Role: Developer"}</Typography>
   </Stack>
 );
 
