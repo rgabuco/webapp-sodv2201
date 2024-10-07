@@ -1,5 +1,3 @@
-import React from "react";
-
 // Initial dummy data for users
 export const usersArray = [
   {
@@ -39,17 +37,17 @@ export const usersArray = [
     isAdmin: true,
   },
   {
-  id: 4,
-  username: "submax",
-  password: "submax",
-  email: "submax@example.com",
-  firstName: "Submax",
-  lastName: "Max",
-  phone: "+123 456 7890",
-  department: "Software Development",
-  program: "Software Development - Diploma",
-  isAdmin: true,
-},
+    id: 4,
+    username: "submax",
+    password: "submax",
+    email: "submax@example.com",
+    firstName: "Submax",
+    lastName: "Max",
+    phone: "+123 456 7890",
+    department: "Software Development",
+    program: "Software Development - Diploma",
+    isAdmin: true,
+  },
 ];
 
 export default usersArray;

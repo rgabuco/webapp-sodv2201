@@ -1,4 +1,3 @@
-import React from "react";
 // Initial dummy data for programs
 const programsArray = [
   {
@@ -20,7 +19,6 @@ const programsArray = [
     endDate: "Dec 30, 2025",
     fees: "$8,254 domestic / $21,512 international",
     category: "Software Development Programs",
-    
   },
   {
     code: "SDABVC-2025",
@@ -31,9 +29,7 @@ const programsArray = [
     endDate: "Oct 30, 2025",
     fees: "$17,324 domestic / $20,735 international",
     category: "Software Development Programs",
-    
   },
-  
 ];
 
 export default programsArray;
