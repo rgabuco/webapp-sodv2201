@@ -24,7 +24,7 @@ function Contact() {
       <Navbar rightMenu={userLoggedIn ? <ProfileMenu /> : <LoginButton />} />
       <Container maxWidth="lg" sx={{ mt: 3, color: "#34405E" }}>
       <Typography variant="h3" gutterBottom sx={{ mb: 5, textAlign: "center", color: "#34405E"}}>
-          Ask Us A Question
+          Contact Information
         </Typography>
       </Container>
       <ContactForm/>
