@@ -34,14 +34,14 @@ function StudentList() {
 
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
-    const currentUser = storedUsers.find(user => user.username === localStorage.getItem("currentUsername"));
-    
+    const currentUser = storedUsers.find((user) => user.username === localStorage.getItem("currentUsername"));
+
     if (currentUser && currentUser.isAdmin === "true") {
       setIsAdmin(true);
     }
 
     // Filter out admin users on initial load
-    const filteredUsers = storedUsers.filter(user => user.isAdmin !== "true");
+    const filteredUsers = storedUsers.filter((user) => user.isAdmin !== "true");
     setUsers(filteredUsers);
   }, []);
 
@@ -89,7 +89,7 @@ function StudentList() {
     const newVisibility = {};
     const isChecked = event.target.checked;
 
-    ['firstName', 'lastName', 'email', 'phone', 'department', 'program'].forEach((column) => {
+    ["firstName", "lastName", "email", "phone", "department", "program"].forEach((column) => {
       newVisibility[column] = isChecked;
     });
 
@@ -119,22 +119,22 @@ function StudentList() {
 
   // New function to handle student deletion
   const handleDelete = (studentId) => {
-    const updatedUsers = users.filter(student => student.id !== studentId); 
+    const updatedUsers = users.filter((student) => student.id !== studentId);
     setUsers(updatedUsers);
-    localStorage.setItem("bvc-users", JSON.stringify(updatedUsers)); 
+    localStorage.setItem("bvc-users", JSON.stringify(updatedUsers));
   };
 
   return (
     <div>
       <Navbar rightMenu={<ProfileMenu />} />
       <Container maxWidth="lg" sx={{ mt: 5, color: "#34405E" }}>
-        <Typography variant="h3" gutterBottom sx={{ mb: 3, textAlign: "center" }}>
+        <Typography variant="h4" gutterBottom sx={{ mb: 3, textAlign: "center" }}>
           Student Information List
         </Typography>
 
         {!isAdmin && (
           <>
-            <FilterSearchReset 
+            <FilterSearchReset
               clickedIcons={clickedIcons}
               handleIconClick={handleIconClick}
               handleOpenFilter={handleOpenFilter}
@@ -147,16 +147,12 @@ function StudentList() {
               handleFilterChange={handleFilterChange}
             />
 
-            <StudentTable 
-              filteredUsers={filteredUsers} 
-              columnVisibility={columnVisibility} 
-              handleDelete={handleDelete} 
-            />
+            <StudentTable filteredUsers={filteredUsers} columnVisibility={columnVisibility} handleDelete={handleDelete} />
           </>
         )}
       </Container>
 
-      <ColumnPopover 
+      <ColumnPopover
         anchorElColumns={anchorElColumns}
         handleClosePopover={handleClosePopover}
         columnVisibility={columnVisibility}
