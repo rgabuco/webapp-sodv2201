@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar/Navbar";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, IconButton, Box } from "@mui/material";
 import FilterSearchReset from "../components/filter-search-reset/FilterSearchReset";
 import StudentTable from "../components/student-table/StudentTable";
 import ColumnPopover from "../components/column-popover/ColumnPopover";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import FirstPage from "@mui/icons-material/FirstPage";
 
 function StudentList() {
   const [anchorElFilter, setAnchorElFilter] = useState(null);
@@ -32,6 +35,10 @@ function StudentList() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [users, setUsers] = useState([]);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6; // Number of items per page
+
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
     const currentUser = storedUsers.find((user) => user.username === localStorage.getItem("currentUsername"));
@@ -58,6 +65,10 @@ function StudentList() {
       (filterValues.program === "" || student.program.toLowerCase().includes(filterValues.program.toLowerCase()))
     );
   });
+
+  // Calculate the paginated users
+  const paginatedUsers = filteredUsers.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   const handleIconClick = (iconName) => {
     setClickedIcons((prevState) => ({ ...prevState, [iconName]: !prevState[iconName] }));
@@ -115,6 +126,7 @@ function StudentList() {
       program: "",
     });
     handleClosePopover();
+    setCurrentPage(0); // Reset to the first page
   };
 
   // New function to handle student deletion
@@ -122,6 +134,25 @@ function StudentList() {
     const updatedUsers = users.filter((student) => student.id !== studentId);
     setUsers(updatedUsers);
     localStorage.setItem("bvc-users", JSON.stringify(updatedUsers));
+  };
+
+  // Function to go to the next page
+  const handleNextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  // Function to go to the previous page
+  const handlePrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  // Function to go to the first page
+  const handleFirstPage = () => {
+    setCurrentPage(0);
   };
 
   return (
@@ -147,7 +178,19 @@ function StudentList() {
               handleFilterChange={handleFilterChange}
             />
 
-            <StudentTable filteredUsers={filteredUsers} columnVisibility={columnVisibility} handleDelete={handleDelete} />
+            <StudentTable filteredUsers={paginatedUsers} columnVisibility={columnVisibility} handleDelete={handleDelete} />
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+              <IconButton onClick={handleFirstPage} disabled={currentPage === 0}>
+                <FirstPage />
+              </IconButton>
+              <IconButton onClick={handlePrevPage} disabled={currentPage === 0}>
+                <KeyboardArrowLeft />
+              </IconButton>
+              <IconButton onClick={handleNextPage} disabled={currentPage >= totalPages - 1}>
+                <KeyboardArrowRight />
+              </IconButton>
+            </Box>
           </>
         )}
       </Container>
