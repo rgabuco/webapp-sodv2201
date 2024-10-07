@@ -47,15 +47,12 @@ function Courses() {
 
   // Filter courses based on the search query
   const filteredCourses = Object.keys(courses).reduce((acc, category) => {
-    const filtered = courses[category].filter((course) =>
-      course.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      course.code.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    
+    const filtered = courses[category].filter((course) => course.name.toLowerCase().includes(searchQuery.toLowerCase()) || course.code.toLowerCase().includes(searchQuery.toLowerCase()));
+
     if (filtered.length) {
       acc[category] = filtered;
     }
-    
+
     return acc;
   }, {});
 
@@ -63,20 +60,20 @@ function Courses() {
     <Container sx={{ padding: 0, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Navbar rightMenu={userLoggedIn ? <ProfileMenu /> : <LoginButton />} />
       <Box sx={{ flexGrow: 1, mt: 2, overflowY: "auto" }}>
-        <Typography variant="h3" sx={{ marginBottom: 2, textAlign: "center", color: "#2B3C5E" }}>
+        <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center", color: "#2B3C5E" }}>
           View All Courses
         </Typography>
 
         {/* Input field for searching courses */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
-  <TextField
-    variant="outlined"
-    placeholder="Search for a course by name or code"
-    value={searchQuery}
-    onChange={handleSearch}
-    sx={{ width: "100%", maxWidth: 400 }} // Adjust width here
-  />
-</Box>
+        <Box sx={{ display: "flex", justifyContent: "center", marginBottom: 2 }}>
+          <TextField
+            variant="outlined"
+            placeholder="Search for a course by name or code"
+            value={searchQuery}
+            onChange={handleSearch}
+            sx={{ width: "100%", maxWidth: 400 }} // Adjust width here
+          />
+        </Box>
 
         {/* Display error message if course is not found */}
         {errorMessage && (
@@ -94,14 +91,14 @@ function Courses() {
           ) : (
             Object.keys(filteredCourses).map((category) => (
               <Grid item xs={12} key={category}>
-                <Typography variant="h3" sx={{ marginBottom: 2, textAlign: "center", color: "#2B3C5E" }}>
+                <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center", color: "#2B3C5E" }}>
                   {category} Courses
                 </Typography>
                 <Grid container spacing={3} justifyContent="center">
                   {/* Loop through each course in the current category */}
                   {filteredCourses[category].map((course, index) => (
                     <Grid item xs={12} key={index}>
-                      <Card sx={{ backgroundColor: "#d3d7db", width: "100%", transition: "transform 0.3s ease", "&:hover": { transform: "translateY(-10px)" } }}>
+                      <Card sx={{ backgroundColor: "#f5f5f5", width: "100%", transition: "transform 0.3s ease", "&:hover": { transform: "translateY(-10px)" } }}>
                         <CardContent>
                           <Typography variant="h5" gutterBottom sx={{ color: "#34405E" }}>
                             {course.name}
