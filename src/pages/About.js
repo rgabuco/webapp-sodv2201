@@ -6,6 +6,8 @@ import { Container, Box, Typography } from "@mui/material";
 import AboutSection from "../components/about-section/AboutSection";
 import TeamSection from "../components/team-section/TeamSection";
 import normalImage from "../resources/img.png";
+import RudyImage from "../resources/Rudy.png";
+
 
 function About() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -24,7 +26,7 @@ function About() {
   const handleMouseLeave = (name) => setHovered((prev) => ({ ...prev, [name]: false }));
 
   const teamMembers = [
-    { name: "Rudy Gabuco", image: normalImage, initials: "RG" },
+    { name: "Rudy Gabuco", image: RudyImage, initials: "RG" },
     { name: "Jensen Castro", image: normalImage, initials: "JC" },
     { name: "Ellah Cuna", image: normalImage, initials: "EC" },
     { name: "Paul Lipnica", image: normalImage, initials: "PL" },
