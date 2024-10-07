@@ -1,59 +1,65 @@
-import React, { useState } from 'react';
-import { Card, CardContent, Typography, TextareaAutosize, Button, Box } from '@mui/material';
+import React from 'react';
+import { Typography, Box } from '@mui/material';
 
-// Child component that sends data back to local storage
+
 function ContactForm() {
-  const [textData, setTextData] = useState('');
-
-  const handleChange = (e) => {
-    setTextData(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Save to local storage
-    const currentMessages = JSON.parse(localStorage.getItem('messages')) || [];
-    currentMessages.push(textData);
-    localStorage.setItem('messages', JSON.stringify(currentMessages));
-    setTextData(''); // Reset text area
-  };
-
   return (
-    <Card
+    <Box
       sx={{
-        backgroundColor: "#eeeeee",
-        width: "50%",
+        display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
+        justifyContent: 'center',
+        alignItems: 'center',
         margin: 'auto',
-        transition: "transform 0.3s ease",
-        "&:hover": { transform: "translateY(-10px)" },
         padding: 2,
-        marginBottom: 2,
+        width: { xs: '100%', sm: '50%' },
+        textAlign: 'center',
       }}
     >
-      <CardContent>
-        <Typography variant="h5" gutterBottom sx={{ color: "#34405E" }}>
-          Message:
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextareaAutosize
-            minRows={10}
-            value={textData}
-            onChange={handleChange}
-            placeholder="Message"
-            style={{ width: '100%', marginBottom: '16px', border: '1px solid #ccc' }}
-          />
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button 
-              type="submit" 
-              variant="contained" 
-              sx={{ backgroundColor: "#34405E", color: "#fff", '&:hover': { backgroundColor: '#2c3e50' } }}
-            >
-              Submit
-            </Button>
-          </Box>
-        </form>
-      </CardContent>
-    </Card>
+      <Typography
+        variant="body1"
+        sx={{
+          color: "#34405E",
+          marginRight: { xs: 0, sm: 2 },
+          marginBottom: { xs: 1, sm: 0 },
+          transition: 'transform 0.3s ease', 
+          '&:hover': {
+            transform: 'scale(1.05)', 
+            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)', 
+          },
+        }}
+      >
+        Phone: 403-410-1400
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{
+          color: "#34405E",
+          marginRight: { xs: 0, sm: 2 },
+          marginBottom: { xs: 1, sm: 0 },
+          transition: 'transform 0.3s ease', 
+          '&:hover': {
+            transform: 'scale(1.05)',
+            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)',
+          },
+        }}
+      >
+        Toll Free: 1-866-428-2669
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{
+          color: "#34405E",
+          transition: 'transform 0.3s ease', 
+          '&:hover': {
+            transform: 'scale(1.05)', 
+            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)', 
+          },
+        }}
+      >
+        Email: info@bowvalleycollege.ca
+      </Typography>
+    </Box>
   );
 }
 
