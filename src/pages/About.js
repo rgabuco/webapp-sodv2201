@@ -7,6 +7,10 @@ import AboutSection from "../components/about-section/AboutSection";
 import TeamSection from "../components/team-section/TeamSection";
 import normalImage from "../resources/img.png";
 import RudyImage from "../resources/Rudy.png";
+import EllahImage from "../resources/Ellah.jpg";
+import PhillipImage from "../resources/Phillip.jpg";
+import JensenImage from "../resources/Jensen.jpg";
+import PaulImage from "../resources/Paul.jpg";
 
 
 function About() {
@@ -27,10 +31,10 @@ function About() {
 
   const teamMembers = [
     { name: "Rudy Gabuco", image: RudyImage, initials: "RG" },
-    { name: "Jensen Castro", image: normalImage, initials: "JC" },
-    { name: "Ellah Cuna", image: normalImage, initials: "EC" },
-    { name: "Paul Lipnica", image: normalImage, initials: "PL" },
-    { name: "Phillip Evans Montinola", image: normalImage, initials: "PM" },
+    { name: "Jensen Castro", image: JensenImage, initials: "JC" },
+    { name: "Ellah Cuna", image: EllahImage, initials: "EC" },
+    { name: "Paul Lipnica", image: PaulImage, initials: "PL" },
+    { name: "Phillip Evans Montinola", image: PhillipImage, initials: "PM" },
   ];
 
   return (
