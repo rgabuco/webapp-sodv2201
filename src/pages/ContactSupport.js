@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import Navbar from '../components/navbar/Navbar';
 import ProfileMenu from '../components/profile-menu/ProfileMenu';
-import usersArray from '../utils/data/Users'; // You said not to change your imports
+import usersArray from '../utils/data/Users'; // Assuming the data file has user information
 
 function ContactSupport() {
   const [formData, setFormData] = useState({
@@ -12,10 +12,16 @@ function ContactSupport() {
   });
 
   useEffect(() => {
-    // Get logged in user's name from localStorage and set the form username
+    // Get logged in user's name and email from localStorage and set them in the form
     const username = localStorage.getItem('userLoggedIn');
-    if (username) {
-      setFormData((prev) => ({ ...prev, username }));
+    const user = usersArray.find((user) => user.username === username); // Find user from the array
+
+    if (username && user) {
+      setFormData({
+        username,
+        email: user.email, // Automatically set the logged-in user's email
+        message: ''
+      });
     }
   }, []);
 
@@ -26,33 +32,43 @@ function ContactSupport() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Find admin using the entered email
-    const admin = usersArray.find(user => user.email === formData.email && user.isAdmin);
-    
-    if (admin) {
-      // Prepare the message
-      const newMessage = {
-        ...formData,
-        date: new Date().toISOString()
-      };
-      
-      // Save the message under the admin's username
-      saveMessageToLocalStorage(newMessage, admin.username); // Note: we use the admin's username as the key for messages
+    // Prepare the message
+    const newMessage = {
+      ...formData,
+      date: new Date().toISOString()
+    };
 
-      console.log('Message Saved:', newMessage);
+    // Save the message for all admins
+    saveMessageForAllAdmins(newMessage);
 
-      // Clear the form after submission
-      setFormData((prev) => ({ ...prev, message: '' }));
-    } else {
-      alert('The email you entered does not belong to an admin.');
-    }
+    console.log('Message Saved:', newMessage);
+
+    // Clear the form after submission
+    setFormData((prev) => ({ ...prev, message: '' }));
   };
 
   return (
     <div>
       <Navbar rightMenu={<ProfileMenu />} />
-      <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 500, margin: '0 auto', mt: 3 }}>
-        <Typography variant="h4" sx={{ mb: 3 }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          maxWidth: 500,
+          margin: '0 auto',
+          mt: 3,
+          padding: 3,
+          borderRadius: '12px', // Softer corners
+          boxShadow: '5px 10px 20px rgba(0, 0, 0, 0.3), -5px -10px 20px rgba(0, 0, 0, 0.15)', // Enhanced shadow with left, right, and top
+          backgroundColor: '#fff', // White background to contrast with the shadow
+          transition: 'transform 0.3s ease', // Smooth transition on hover
+          '&:hover': {
+            transform: 'translateY(-5px)', // Slight lift on hover
+            boxShadow: '5px 15px 25px rgba(0, 0, 0, 0.4), -5px -15px 25px rgba(0, 0, 0, 0.2)', // Stronger shadow on hover
+          }
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: 3, textAlign: 'center' }}>
           Contact Support
         </Typography>
         <TextField
@@ -67,12 +83,13 @@ function ContactSupport() {
         />
         <TextField
           fullWidth
-          label="Admin Email"
+          label="User Email"
           name="email"
           value={formData.email}
           onChange={handleChange}
           margin="normal"
           required
+          disabled
         />
         <TextField
           fullWidth
@@ -85,7 +102,7 @@ function ContactSupport() {
           rows={4}
           required
         />
-        <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+        <Button type="submit" variant="contained" color="primary" sx={{ mt: 2, width: '100%' }}>
           Submit
         </Button>
       </Box>
@@ -93,16 +110,21 @@ function ContactSupport() {
   );
 }
 
-// Save the message to localStorage under the admin's username
-function saveMessageToLocalStorage(message, adminUsername) {
-  const messages = JSON.parse(localStorage.getItem('bvc-messages')) || {};
+// Save the message for all admins
+function saveMessageForAllAdmins(newMessage) {
+  const storedMessages = JSON.parse(localStorage.getItem('bvc-messages')) || {};
 
-  if (!messages[adminUsername]) {
-    messages[adminUsername] = [];
-  }
+  // Save message under each admin's username
+  usersArray.forEach((user) => {
+    if (user.isAdmin) {
+      if (!storedMessages[user.username]) {
+        storedMessages[user.username] = [];
+      }
+      storedMessages[user.username].push(newMessage);
+    }
+  });
 
-  messages[adminUsername].push(message);
-  localStorage.setItem('bvc-messages', JSON.stringify(messages));
+  localStorage.setItem('bvc-messages', JSON.stringify(storedMessages));
 }
 
 export default ContactSupport;
