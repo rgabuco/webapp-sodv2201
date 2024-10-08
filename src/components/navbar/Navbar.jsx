@@ -4,6 +4,8 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import HamburgerMenu from "../hamburger-menu/HamburgerMenu"; // Import HamburgerMenu
+import logo from "../../assets/bvc.png"; // Adjust the path if necessary
+import { Box } from "@mui/material"; // Import Box for layout
 
 const getNavText = (pathname) => {
   switch (pathname) {
@@ -43,7 +45,6 @@ const getNavText = (pathname) => {
 };
 
 function Navbar({ leftMenu = <HamburgerMenu />, rightMenu }) {
-  // Set default value for leftMenu
   const location = useLocation();
   const [navText, setNavText] = useState(getNavText(location.pathname));
 
@@ -58,6 +59,7 @@ function Navbar({ leftMenu = <HamburgerMenu />, rightMenu }) {
           {leftMenu}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             {navText}
+            <Box component="img" src={logo} alt="Company Logo" sx={{ height: '40px', marginLeft: 1, marginRight: 1 }} /> {/* Adjust height as needed */}
           </Typography>
           {rightMenu}
         </Toolbar>
