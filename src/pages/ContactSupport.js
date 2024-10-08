@@ -59,8 +59,8 @@ function ContactSupport() {
           mt: 3,
           padding: 3,
           borderRadius: '12px', // Softer corners
-          boxShadow: '5px 10px 20px rgba(0, 0, 0, 0.3), -5px -10px 20px rgba(0, 0, 0, 0.15)', // Enhanced shadow with left, right, and top
-          backgroundColor: '#fff', // White background to contrast with the shadow
+          boxShadow: '5px 10px 20px rgba(0, 0, 0, 0.3), -5px -10px 20px rgba(0, 0, 0, 0.15)', 
+          backgroundColor: '#fff', 
           transition: 'transform 0.3s ease', // Smooth transition on hover
           '&:hover': {
             transform: 'translateY(-5px)', // Slight lift on hover
