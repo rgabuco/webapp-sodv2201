@@ -14,6 +14,9 @@ import student1 from "../assets/student1.jpg";
 import student4 from "../assets/student4.jpg";
 import student6 from "../assets/student6.jpg";
 
+// Import the DateTime component
+import DateTime from "../components/date-time/DateTime"; // Correct import path
+
 // Add all images to the imageList array
 const imageList = [student1, student2, student3, student4, student5, student6];
 
@@ -21,7 +24,6 @@ function Home() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [opacity, setOpacity] = useState(1); // For fade effect
-  const [currentDateTime, setCurrentDateTime] = useState(new Date().toLocaleString()); // State for date and time
 
   useEffect(() => {
     const checkUserLoggedIn = () => {
@@ -38,22 +40,10 @@ function Home() {
       setTimeout(() => {
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageList.length); // Change image
         setOpacity(1); // Start fading in
-      }, 1000); // Time to fade out (500ms)
+      }, 1000); // Time to fade out (1000ms)
     };
 
     const timer = setInterval(fadeOut, 5000); // Change image every 5 seconds (after fading out)
-
-    return () => clearInterval(timer); // Clean up on unmount
-  }, []);
-
-  useEffect(() => {
-    const updateDateTime = () => {
-      // Get the current date and time with the day
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
-      setCurrentDateTime(new Date().toLocaleString(undefined, options)); // Update date and time
-    };
-
-    const timer = setInterval(updateDateTime, 1000); // Update every second
 
     return () => clearInterval(timer); // Clean up on unmount
   }, []);
@@ -64,9 +54,7 @@ function Home() {
 
       {/* Current Date and Time aligned to the right */}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: 0, color: "#34405E", margin: '0 0 20px 0' }}>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: '0.8rem', marginTop: '-20px' }}> {/* Added top margin */}
-          {currentDateTime}
-        </Typography>
+        <DateTime /> {/* Add DateTime component here to display it on this page */}
       </Box>
       
       {/* Home Heading */}
