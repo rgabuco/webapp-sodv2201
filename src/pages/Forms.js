@@ -85,6 +85,7 @@ function Forms() {
     if (filterCriteria.includes("all")) {
       return (
         msg.username.toLowerCase().includes(query) ||
+        msg.email.toLowerCase().includes(query) || // Include email in search
         msg.message.toLowerCase().includes(query) ||
         new Date(msg.date).toLocaleString().includes(query)
       );
@@ -209,6 +210,7 @@ function Forms() {
             >
               <TableRow>
                 <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Username</TableCell>
+                <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Email</TableCell> {/* New Email Column */}
                 <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Message</TableCell>
                 <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Date</TableCell>
                 <TableCell />
@@ -217,7 +219,7 @@ function Forms() {
             <TableBody>
               {filteredMessages.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} align="center">
+                  <TableCell colSpan={5} align="center">
                     No messages found.
                   </TableCell>
                 </TableRow>
@@ -236,6 +238,7 @@ function Forms() {
                     <TableCell>
                       <AccountCircleIcon sx={{ mr: 1 }} /> {message.username}
                     </TableCell>
+                    <TableCell>{message.email}</TableCell> {/* New Email Field */}
                     <TableCell>
                       <IconButton
                         color={viewedMessages.includes(message.date) ? "default" : "primary"}

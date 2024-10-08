@@ -68,7 +68,7 @@ function ContactSupport() {
           }
         }}
       >
-        <Typography variant="h4" sx={{ mb: 3, textAlign: 'center' }}>
+        <Typography variant="h4" sx={{ mb: 3, textAlign: 'center', color:"#2B3C5E"}}>
           Contact Support
         </Typography>
         <TextField
