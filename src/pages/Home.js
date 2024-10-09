@@ -6,12 +6,12 @@ import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import { Grid, CardMedia } from "@mui/material";
 import { Box, Typography } from "@mui/material";
 import DateTime from "../components/date-time/DateTime";
-import student5 from "../assets/student5.jpg";
-import student2 from "../assets/student2.jpg";
-import student3 from "../assets/student3.jpeg";
-import student1 from "../assets/student1.jpg";
-import student4 from "../assets/student4.jpg";
-import student6 from "../assets/student6.jpg";
+import student5 from "../resources/img/home/student5.jpg";
+import student2 from "../resources/img/home/student2.jpg";
+import student3 from "../resources/img/home/student3.jpeg";
+import student1 from "../resources/img/home/student1.jpg";
+import student4 from "../resources/img/home/student4.jpg";
+import student6 from "../resources/img/home/student6.jpg";
 
 const imageList = [student1, student2, student3, student4, student5, student6];
 
