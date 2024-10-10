@@ -5,9 +5,12 @@ import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import { Container, Box, Typography } from "@mui/material";
 import AboutSection from "../components/about-section/AboutSection";
 import TeamSection from "../components/team-section/TeamSection";
-import normalImage from "../resources/img.png";
-import RudyImage from "../resources/Rudy.png";
-
+import normalImage from "../resources/img/about/img.png";
+import RudyImage from "../resources/img/about/Rudy.png";
+import EllahImage from "../resources/img/about/Ellah.jpg";
+import PhillipImage from "../resources/img/about/Phillip.jpg";
+import JensenImage from "../resources/img/about/Jensen.jpg";
+import PaulImage from "../resources/img/about/Paul.jpg";
 
 function About() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -27,10 +30,10 @@ function About() {
 
   const teamMembers = [
     { name: "Rudy Gabuco", image: RudyImage, initials: "RG" },
-    { name: "Jensen Castro", image: normalImage, initials: "JC" },
-    { name: "Ellah Cuna", image: normalImage, initials: "EC" },
-    { name: "Paul Lipnica", image: normalImage, initials: "PL" },
-    { name: "Phillip Evans Montinola", image: normalImage, initials: "PM" },
+    { name: "Jensen Castro", image: JensenImage, initials: "JC" },
+    { name: "Ellah Cuna", image: EllahImage, initials: "EC" },
+    { name: "Paul Lipnica", image: PaulImage, initials: "PL" },
+    { name: "Phillip Evans Montinola", image: PhillipImage, initials: "PM" },
   ];
 
   return (

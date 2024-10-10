@@ -48,7 +48,7 @@ function Forms() {
   const [filterCriteria, setFilterCriteria] = useState(["all"]); // Default to 'all'
   const [openMessage, setOpenMessage] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const [viewedMessages, setViewedMessages] = useState([]); // Track viewed messages
+  const [viewedMessages, setViewedMessages] = useState([]); // Track viewed messages by message `date`
 
   useEffect(() => {
     const loggedInUsername = localStorage.getItem("userLoggedIn");
@@ -58,12 +58,16 @@ function Forms() {
       setLoggedInAdmin(admin.username);
 
       const storedMessages = JSON.parse(localStorage.getItem("bvc-messages")) || {};
+      const storedViewedMessages = JSON.parse(localStorage.getItem("viewed-messages")) || [];
 
       if (storedMessages[admin.username]) {
         setMessages(storedMessages[admin.username]);
       } else {
         setMessages([]);
       }
+
+      // Load viewed messages from localStorage
+      setViewedMessages(storedViewedMessages);
     }
   }, []);
 
@@ -79,7 +83,12 @@ function Forms() {
   const filteredMessages = messages.filter((msg) => {
     const query = searchQuery.toLowerCase();
     if (filterCriteria.includes("all")) {
-      return msg.username.toLowerCase().includes(query) || msg.message.toLowerCase().includes(query) || new Date(msg.date).toLocaleString().includes(query);
+      return (
+        msg.username.toLowerCase().includes(query) ||
+        msg.email.toLowerCase().includes(query) || // Include email in search
+        msg.message.toLowerCase().includes(query) ||
+        new Date(msg.date).toLocaleString().includes(query)
+      );
     }
     return filterCriteria.some((criteria) => {
       if (criteria === "username") {
@@ -96,9 +105,14 @@ function Forms() {
   const handleOpenMessage = (message) => {
     setSelectedMessage(message);
     setOpenMessage(true);
-    // Mark the message as viewed
-    if (!viewedMessages.includes(message)) {
-      setViewedMessages([...viewedMessages, message]);
+
+    // Mark the message as viewed and store in localStorage using `date` as the unique identifier
+    if (!viewedMessages.includes(message.date)) {
+      const updatedViewedMessages = [...viewedMessages, message.date];
+      setViewedMessages(updatedViewedMessages);
+
+      // Persist the viewed messages in localStorage
+      localStorage.setItem("viewed-messages", JSON.stringify(updatedViewedMessages));
     }
   };
 
@@ -145,7 +159,9 @@ function Forms() {
             value={filterCriteria}
             onChange={handleFilterChange}
             input={<OutlinedInput />}
-            renderValue={(selected) => selected.map((sel) => filterOptions.find((f) => f.value === sel).label).join(", ")}
+            renderValue={(selected) =>
+              selected.map((sel) => filterOptions.find((f) => f.value === sel).label).join(", ")
+            }
             sx={{ flex: 1, backgroundColor: "#f5f5f5", borderRadius: "5px" }}
             displayEmpty
             startAdornment={
@@ -185,9 +201,16 @@ function Forms() {
               },
             }}
           >
-            <TableHead sx={{ backgroundColor: "#f5f5f5", color: "#2B3C5E", display: { xs: "none", sm: "table-header-group" } }}>
+            <TableHead
+              sx={{
+                backgroundColor: "#f5f5f5",
+                color: "#2B3C5E",
+                display: { xs: "none", sm: "table-header-group" },
+              }}
+            >
               <TableRow>
                 <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Username</TableCell>
+                <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Email</TableCell> {/* New Email Column */}
                 <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Message</TableCell>
                 <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Date</TableCell>
                 <TableCell />
@@ -196,7 +219,7 @@ function Forms() {
             <TableBody>
               {filteredMessages.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} align="center">
+                  <TableCell colSpan={5} align="center">
                     No messages found.
                   </TableCell>
                 </TableRow>
@@ -215,8 +238,13 @@ function Forms() {
                     <TableCell>
                       <AccountCircleIcon sx={{ mr: 1 }} /> {message.username}
                     </TableCell>
+                    <TableCell>{message.email}</TableCell> {/* New Email Field */}
                     <TableCell>
-                      <IconButton color={viewedMessages.includes(message) ? "default" : "primary"} onClick={() => handleOpenMessage(message)} aria-label="view-message">
+                      <IconButton
+                        color={viewedMessages.includes(message.date) ? "default" : "primary"}
+                        onClick={() => handleOpenMessage(message)}
+                        aria-label="view-message"
+                      >
                         <MarkEmailUnreadIcon />
                       </IconButton>
                     </TableCell>

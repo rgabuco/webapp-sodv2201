@@ -39,7 +39,17 @@ const HamburgerMenu = () => {
 
   return (
     <>
-      <IconButton edge="start" color="inherit" aria-label="menu" onMouseEnter={handleDrawerOpen}>
+      <IconButton
+        edge="start"
+        color="inherit"
+        aria-label="menu"
+        onMouseEnter={handleDrawerOpen}
+        sx={{
+          borderRadius: "20%",
+          border: "2px solid white", // Adjust the color and width as needed
+          marginRight: 1,
+        }}
+      >
         <MenuIcon />
       </IconButton>
       <Drawer
