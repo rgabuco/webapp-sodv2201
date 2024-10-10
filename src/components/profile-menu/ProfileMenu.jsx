@@ -12,7 +12,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ListIcon from "@mui/icons-material/List";
 import FormIcon from "@mui/icons-material/Description";
 
-const ProfileMenu = () => {
+const ProfileMenu = ({ onLogout = () => {} }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navItems, setNavItems] = useState([]);
   const [userName, setUserName] = useState("");
@@ -53,6 +53,7 @@ const ProfileMenu = () => {
     if (path === "/logout") {
       localStorage.removeItem("userLoggedIn");
       localStorage.removeItem("isAdministrator");
+      onLogout();
       navigate("/home");
     } else {
       navigate(path);
@@ -86,7 +87,7 @@ const ProfileMenu = () => {
         open={drawerOpen}
         onClose={handleDrawerClose}
         PaperProps={{
-          sx: { width: 300 }, // Increase the width of the drawer
+          sx: { width: 300 },
           onMouseLeave: handleDrawerClose,
         }}
       >
