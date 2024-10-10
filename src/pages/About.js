@@ -11,6 +11,7 @@ import EllahImage from "../resources/img/about/Ellah.jpg";
 import PhillipImage from "../resources/img/about/Phillip.jpg";
 import JensenImage from "../resources/img/about/Jensen.jpg";
 import PaulImage from "../resources/img/about/Paul.jpg";
+import DateTime from "../components/date-time/DateTime";
 
 function About() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -39,6 +40,9 @@ function About() {
   return (
     <div>
       <Navbar rightMenu={userLoggedIn ? <ProfileMenu /> : <LoginButton />} />
+      <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", padding: 0, color: "#34405E", margin: "0 0 20px 0" }}>
+        <DateTime />
+      </Box>
 
       <Container sx={{ padding: 0, display: "flex", flexDirection: "column", minHeight: "15vh" }}>
         <AboutSection />
