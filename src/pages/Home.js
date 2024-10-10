@@ -35,7 +35,7 @@ function Home() {
       setTimeout(() => {
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageList.length);
         setOpacity(1);
-      }, 1000);
+      }, 500);
     };
 
     const timer = setInterval(fadeOut, 5000);
