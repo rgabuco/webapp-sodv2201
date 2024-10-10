@@ -241,7 +241,7 @@ function Forms() {
                     <TableCell>{message.email}</TableCell> {/* New Email Field */}
                     <TableCell>
                       <IconButton
-                        color={viewedMessages.includes(message.date) ? "default" : "primary"}
+                        color="default" // Set to default so it is always gray
                         onClick={() => handleOpenMessage(message)}
                         aria-label="view-message"
                       >
