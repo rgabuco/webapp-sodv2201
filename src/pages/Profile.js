@@ -1,13 +1,172 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Card,
+  CardContent,
+  CardActions,
+} from "@mui/material";
 import Navbar from "../components/navbar/Navbar";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
 
 function Profile() {
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    department: "",
+    program: "",
+  });
+
+  useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
+    const currentUsername = localStorage.getItem("userLoggedIn");
+    const currentUser = storedUsers.find((user) => user.username === currentUsername);
+
+    if (currentUser) {
+      setLoggedInUser(currentUser);
+      setFormData(currentUser);
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
+    const updatedUsers = storedUsers.map((user) =>
+      user.username === formData.username ? formData : user
+    );
+    localStorage.setItem("bvc-users", JSON.stringify(updatedUsers));
+    setIsEditing(false);
+  };
+
+  const handleDelete = () => {
+    const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
+    const updatedUsers = storedUsers.filter((user) => user.username !== formData.username);
+    localStorage.setItem("bvc-users", JSON.stringify(updatedUsers));
+    localStorage.removeItem("userLoggedIn");
+    window.location.href = "/signup";
+  };
+
   return (
     <div>
       <Navbar rightMenu={<ProfileMenu />} />
-      <h1>Profile Page</h1>
-      {/* Add your home content here */}
+      <Container maxWidth="sm">
+        <Box sx={{ mt: 4 }}>
+          <Card sx={{ p: 4 }}>
+            <CardContent>
+              <Typography variant="h4" gutterBottom sx={{ color: "#34405E" }}>
+                Profile
+              </Typography>
+              <TextField
+                label="Username"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                disabled
+              />
+              <TextField
+                label="First Name"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                required
+                disabled={!isEditing}
+                sx={{ color: "#34405E" }}
+              />
+              <TextField
+                label="Last Name"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                required
+                disabled={!isEditing}
+                sx={{ color: "#34405E" }}
+              />
+              <TextField
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                required
+                disabled={!isEditing}
+                sx={{ color: "#34405E" }}
+              />
+              <TextField
+                label="Phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                required
+                disabled={!isEditing}
+                sx={{ color: "#34405E" }}
+              />
+              <TextField
+                label="Department"
+                name="department"
+                value={formData.department}
+                fullWidth
+                margin="normal"
+                disabled
+                sx={{ backgroundColor: "grey.100", color: "#34405E" }} // Greyed out
+              />
+              <TextField
+                label="Program"
+                name="program"
+                value={formData.program}
+                fullWidth
+                margin="normal"
+                disabled
+                sx={{ backgroundColor: "grey.100", color: "#34405E" }} // Greyed out
+              />
+            </CardContent>
+            <CardActions>
+              {isEditing ? (
+                <>
+                  <Button onClick={handleSave} variant="contained" color="primary">
+                    Save
+                  </Button>
+                  <Button onClick={() => setIsEditing(false)} variant="outlined">
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={handleEdit} variant="contained" color="primary">
+                  Edit
+                </Button>
+              )}
+              <Button onClick={handleDelete} variant="outlined" color="error">
+                Delete Account
+              </Button>
+            </CardActions>
+          </Card>
+        </Box>
+      </Container>
     </div>
   );
 }
