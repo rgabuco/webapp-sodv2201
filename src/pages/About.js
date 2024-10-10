@@ -48,7 +48,7 @@ function About() {
         <AboutSection />
       </Container>
 
-      <Container sx={{ marginTop: "35vh", padding: 0, display: "flex", flexDirection: "column" }}>
+      <Container sx={{ marginTop: "15vh", padding: 0, display: "flex", flexDirection: "column" }}>
         <Box sx={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", padding: 2, color: "#34405E" }}>
           <Typography variant="h4">The Team</Typography>
         </Box>
