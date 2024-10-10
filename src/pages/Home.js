@@ -63,8 +63,8 @@ function Home() {
             image={imageList[currentImageIndex]}
             alt={`Slideshow image ${currentImageIndex + 1}`}
             style={{
-              width: "600px",
-              height: "350px",
+              width: "80vw",     // Adjusts based on 80% of viewport width
+              height: "50vh",    // Adjusts based on 50% of viewport height
               objectFit: "cover",
               margin: "0 auto",
               opacity: opacity,
