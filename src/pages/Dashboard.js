@@ -5,6 +5,7 @@ import ProfileMenu from "../components/profile-menu/ProfileMenu";
 
 function Dashboard() {
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [status, setStatus] = useState("Not Enrolled");
 
   useEffect(() => {
     // Get all users from localStorage
@@ -22,6 +23,12 @@ function Dashboard() {
     // Set the logged-in user state
     if (currentUser) {
       setLoggedInUser(currentUser);
+
+      // Check if the student has any courses added
+      const selectedCourses = JSON.parse(localStorage.getItem("selectedCourses")) || [];
+      if (selectedCourses.length > 0) {
+        setStatus("Enrolled");
+      }
     }
   }, []);
 
@@ -59,6 +66,10 @@ function Dashboard() {
               <Grid item xs={12} sm={6}>
                 <Typography variant="h6">Program:</Typography>
                 <Typography>{loggedInUser.program}</Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h6">Status:</Typography>
+                <Typography>{status}</Typography>
               </Grid>
             </Grid>
           </Paper>
