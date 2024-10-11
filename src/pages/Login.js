@@ -10,7 +10,6 @@ import coursesArray from "../utils/data/Courses";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("student");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
@@ -33,6 +32,8 @@ function Login() {
   const handleLogin = () => {
     const users = JSON.parse(localStorage.getItem("bvc-users"));
     const user = users.find((user) => user.username === username);
+    const isAdministrator = user.isAdmin;
+    console.log("user:", user);
 
     if (!user) {
       setUsernameError("Username does not exist.");
@@ -47,14 +48,15 @@ function Login() {
     }
 
     // Handle successful login logic here
-    console.log("Login successful", { username, role });
+    console.log("userLoggedIn ", { username });
+    console.log("isAdministrator:", { isAdministrator });
     setUsernameError(""); // Clear any previous username error
     setPasswordError(""); // Clear any previous password error
 
     // Set localStorage variables
     try {
       localStorage.setItem("userLoggedIn", username);
-      localStorage.setItem("isAdministrator", user.isAdmin ? "true" : "false");
+      localStorage.setItem("isAdministrator", isAdministrator);
       console.log("LocalStorage variables set successfully");
     } catch (error) {
       console.error("Error setting localStorage variables", error);
