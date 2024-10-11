@@ -43,6 +43,7 @@ function AdmAddCourses() {
     classSize: "40",
   });
 
+  const [program, setProgram] = useState("Software Development - Diploma"); // Default program
   const [openModal, setOpenModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [tempDays, setTempDays] = useState([]);
@@ -116,8 +117,10 @@ function AdmAddCourses() {
       return;
     }
 
-    const existingCourses = JSON.parse(localStorage.getItem("bvc-courses")) || [];
-    existingCourses.push(courseData);
+    const existingCourses = JSON.parse(localStorage.getItem("bvc-courses")) || {};
+    const programCourses = existingCourses[program] || [];
+    programCourses.push(courseData);
+    existingCourses[program] = programCourses;
     localStorage.setItem("bvc-courses", JSON.stringify(existingCourses));
 
     setOpenModal(true);
@@ -220,6 +223,16 @@ function AdmAddCourses() {
                 </Box>
                 <Box sx={{ flex: "1 1 100%" }}>
                   <TextField label="Prerequisites" name="prerequisites" value={courseData.prerequisites} onChange={handleChange} fullWidth />
+                </Box>
+                <Box sx={{ flex: "1 1 100%" }}>
+                  <FormControl fullWidth required variant="outlined">
+                    <InputLabel>Program</InputLabel>
+                    <Select name="program" value={program} onChange={(e) => setProgram(e.target.value)} label="Program">
+                      <MenuItem value="Software Development - Diploma">Software Development - Diploma</MenuItem>
+                      <MenuItem value="Software Development - Post Diploma">Software Development - Post Diploma</MenuItem>
+                      <MenuItem value="Accelerated Software Development Certificate">Accelerated Software Development Certificate</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Box>
                 {error && (
                   <Box sx={{ flex: "1 1 100%" }}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar/Navbar";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
-import coursesArray from "../utils/data/Courses";
+import coursesObject from "../utils/data/Courses";
 import { Container, Box, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import CourseCard from "../components/course-card/CourseCard";
 import CourseFilter from "../components/course-filter/CourseFilter";
@@ -17,15 +17,20 @@ function AdmCourses() {
     const storedCourses = localStorage.getItem("bvc-courses");
     if (storedCourses) {
       try {
-        setCourses(JSON.parse(storedCourses));
+        const parsedCourses = JSON.parse(storedCourses);
+        if (typeof parsedCourses === "object" && !Array.isArray(parsedCourses)) {
+          setCourses(parsedCourses);
+        } else {
+          console.error("Parsed courses is not an object");
+          setCourses({});
+        }
       } catch (e) {
         console.error("Failed to parse courses from local storage", e);
-        setCourses([]);
+        setCourses({});
       }
     } else {
-      const allCourses = Object.values(coursesArray).flat();
-      localStorage.setItem("bvc-courses", JSON.stringify(allCourses));
-      setCourses(allCourses);
+      localStorage.setItem("bvc-courses", JSON.stringify(coursesObject));
+      setCourses(coursesObject);
     }
   }, []);
 
@@ -38,20 +43,31 @@ function AdmCourses() {
   };
 
   const handleSaveEdit = () => {
-    const updatedCourses = courses.map((course) => (course.code === editCourse.code ? editCourse : course));
+    const updatedCourses = { ...courses };
+    for (const program in updatedCourses) {
+      updatedCourses[program] = updatedCourses[program].map((c) => (c.code === editCourse.code ? editCourse : c));
+    }
     setCourses(updatedCourses);
     localStorage.setItem("bvc-courses", JSON.stringify(updatedCourses));
     setEditCourse(null);
   };
 
   const handleConfirmDelete = () => {
-    const updatedCourses = courses.filter((course) => course.code !== deleteCourse.code);
+    const updatedCourses = { ...courses };
+    for (const program in updatedCourses) {
+      updatedCourses[program] = updatedCourses[program].filter((c) => c.code !== deleteCourse.code);
+    }
     setCourses(updatedCourses);
     localStorage.setItem("bvc-courses", JSON.stringify(updatedCourses));
     setDeleteCourse(null);
   };
 
-  const filteredCourses = courses.filter((course) => course.name.toLowerCase().includes(searchTerm.toLowerCase()) && (filterTerm ? course.term === filterTerm : true));
+  const getFilteredCourses = () => {
+    const allCourses = Object.values(courses).flat();
+    return allCourses.filter((course) => course.name.toLowerCase().includes(searchTerm.toLowerCase()) && (filterTerm ? course.term === filterTerm : true));
+  };
+
+  const filteredCourses = getFilteredCourses();
 
   return (
     <div>
