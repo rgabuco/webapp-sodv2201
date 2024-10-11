@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-} from "@mui/material";
+import { Container, Box, TextField, Button, Typography, Card, CardContent, CardActions } from "@mui/material";
 import Navbar from "../components/navbar/Navbar";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
 
@@ -47,9 +38,7 @@ function Profile() {
 
   const handleSave = () => {
     const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
-    const updatedUsers = storedUsers.map((user) =>
-      user.username === formData.username ? formData : user
-    );
+    const updatedUsers = storedUsers.map((user) => (user.username === formData.username ? formData : user));
     localStorage.setItem("bvc-users", JSON.stringify(updatedUsers));
     setIsEditing(false);
   };
@@ -67,65 +56,25 @@ function Profile() {
       <Navbar rightMenu={<ProfileMenu />} />
       <Container maxWidth="sm">
         <Box sx={{ mt: 4 }}>
-          <Card sx={{ p: 4 }}>
+          <Card
+            sx={{
+              p: 4,
+              border: "1px solid rgba(0, 0, 0, 0.12)", // Outline
+              boxShadow: 3,
+              mb: 4,
+            }}
+          >
             <CardContent>
-              <Typography variant="h4" gutterBottom sx={{ color: "#34405E" }}>
-                Profile
-              </Typography>
-              <TextField
-                label="Username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                disabled
-              />
-              <TextField
-                label="First Name"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-                disabled={!isEditing}
-                sx={{ color: "#34405E" }}
-              />
-              <TextField
-                label="Last Name"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-                disabled={!isEditing}
-                sx={{ color: "#34405E" }}
-              />
-              <TextField
-                label="Email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-                disabled={!isEditing}
-                sx={{ color: "#34405E" }}
-              />
-              <TextField
-                label="Phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-                disabled={!isEditing}
-                sx={{ color: "#34405E" }}
-              />
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <Typography variant="h4" gutterBottom sx={{ color: "#34405E" }}>
+                  Profile
+                </Typography>
+              </Box>
+              <TextField label="Username" name="username" value={formData.username} onChange={handleChange} fullWidth margin="normal" disabled />
+              <TextField label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} fullWidth margin="normal" required disabled={!isEditing} sx={{ color: "#34405E" }} />
+              <TextField label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} fullWidth margin="normal" required disabled={!isEditing} sx={{ color: "#34405E" }} />
+              <TextField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} fullWidth margin="normal" required disabled={!isEditing} sx={{ color: "#34405E" }} />
+              <TextField label="Phone" name="phone" value={formData.phone} onChange={handleChange} fullWidth margin="normal" required disabled={!isEditing} sx={{ color: "#34405E" }} />
               <TextField
                 label="Department"
                 name="department"

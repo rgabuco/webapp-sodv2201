@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/navbar/Navbar";
-import HamburgerMenu from "../components/hamburger-menu/HamburgerMenu";
+//import HamburgerMenu from "../components/hamburger-menu/HamburgerMenu";
 import LoginButton from "../components/login-button/LoginButton";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import { Grid, CardMedia } from "@mui/material";
@@ -63,8 +63,8 @@ function Home() {
             image={imageList[currentImageIndex]}
             alt={`Slideshow image ${currentImageIndex + 1}`}
             style={{
-              width: "80vw",     // Adjusts based on 80% of viewport width
-              height: "50vh",    // Adjusts based on 50% of viewport height
+              width: "80vw", // Adjusts based on 80% of viewport width
+              height: "50vh", // Adjusts based on 50% of viewport height
               objectFit: "cover",
               margin: "0 auto",
               opacity: opacity,

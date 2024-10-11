@@ -139,6 +139,7 @@ function AdmAddCourses() {
             p: 4,
             border: "1px solid rgba(0, 0, 0, 0.12)",
             boxShadow: 3,
+            mb: 4,
           }}
         >
           <CardContent>

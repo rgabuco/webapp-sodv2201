@@ -5,7 +5,7 @@ import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import { Container, Box, Typography } from "@mui/material";
 import AboutSection from "../components/about-section/AboutSection";
 import TeamSection from "../components/team-section/TeamSection";
-import normalImage from "../resources/img/about/img.png";
+//import normalImage from "../resources/img/about/img.png";
 import RudyImage from "../resources/img/about/Rudy.png";
 import EllahImage from "../resources/img/about/Ellah.jpg";
 import PhillipImage from "../resources/img/about/Phillip.jpg";

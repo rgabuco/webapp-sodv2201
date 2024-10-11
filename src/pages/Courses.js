@@ -21,8 +21,16 @@ function Courses() {
 
     checkUserLoggedIn();
 
-    // Load the courses data
-    setCourses(coursesArray); // Set the courses from the imported data
+    // Check if 'bvc-courses' exists in local storage
+    const storedCourses = localStorage.getItem("bvc-courses");
+
+    if (storedCourses) {
+      // Parse and set the courses from local storage
+      setCourses(JSON.parse(storedCourses));
+    } else {
+      // Set the courses from the imported data
+      setCourses(coursesArray);
+    }
   }, []);
 
   // Function to handle search

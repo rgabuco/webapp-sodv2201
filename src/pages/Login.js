@@ -86,12 +86,11 @@ function Login() {
           <Card
             sx={{
               p: 4,
-              width: "100%",
               border: "1px solid rgba(0, 0, 0, 0.12)", // Outline
               boxShadow: 3, // Shadow
             }}
           >
-            <Typography component="h1" variant="h5" align="center">
+            <Typography component="h1" variant="h4" align="center">
               Login
             </Typography>
             <Box component="form" sx={{ mt: 3 }} onSubmit={handleSubmit}>

@@ -17,10 +17,9 @@ import {
   CardActions,
   FormLabel,
 } from "@mui/material";
-import { PersonAdd as PersonAddIcon } from "@mui/icons-material";
 import Navbar from "../components/navbar/Navbar";
 import programsArray from "../utils/data/Programs";
-import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+//import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import LoginButton from "../components/login-button/LoginButton";
 import SuccessfulSignUp from "../components/modal-successful-signup/SuccessfulSignUp";
@@ -124,14 +123,13 @@ function Signup() {
           <Card
             sx={{
               p: 4,
-              width: "100%",
               border: "1px solid rgba(0, 0, 0, 0.12)",
               boxShadow: 3,
+              mb: 4,
             }}
           >
             <CardContent>
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <AppRegistrationIcon />
                 <Typography variant="h4" gutterBottom>
                   Sign Up
                 </Typography>

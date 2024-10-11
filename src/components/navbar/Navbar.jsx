@@ -59,6 +59,7 @@ function Navbar({ leftMenu = <HamburgerMenu />, rightMenu }) {
           {leftMenu}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             <Box component="img" src={logo} alt="Company Logo" sx={{ height: "39px", marginLeft: 1, marginRight: 2 }} /> {/* Adjust height as needed */}
+            <Box sx={{ display: "none" }}>{navText}</Box>
           </Typography>
           {rightMenu}
         </Toolbar>

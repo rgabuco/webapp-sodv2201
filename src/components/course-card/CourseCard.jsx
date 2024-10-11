@@ -25,7 +25,7 @@ const CourseCard = ({ course, onEdit, onDelete }) => (
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
         <Box sx={{ flex: 6 }}>
           <Typography variant="body1" sx={{ mb: 2, mt: 1 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <CalendarTodayIcon sx={{ mr: 1, color: "#34405E" }} />{" "}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
