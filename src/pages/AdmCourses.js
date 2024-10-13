@@ -4,7 +4,9 @@ import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import coursesObject from "../utils/data/Courses";
 import { Container, Box, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import CourseCard from "../components/course-card/CourseCard";
-import CourseFilter from "../components/course-filter/CourseFilter";
+import TermSelect from "../components/term-select/TermSelect";
+import SearchBox from "../components/search-box/SearchBox";
+import ProgramSelect from "../components/program-select/ProgramSelect";
 
 function AdmCourses() {
   const [courses, setCourses] = useState([]);
@@ -12,6 +14,7 @@ function AdmCourses() {
   const [deleteCourse, setDeleteCourse] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterTerm, setFilterTerm] = useState("");
+  const [filterProgram, setFilterProgram] = useState("");
 
   useEffect(() => {
     const storedCourses = localStorage.getItem("bvc-courses");
@@ -63,11 +66,17 @@ function AdmCourses() {
   };
 
   const getFilteredCourses = () => {
-    const allCourses = Object.values(courses).flat();
-    return allCourses.filter((course) => course.name.toLowerCase().includes(searchTerm.toLowerCase()) && (filterTerm ? course.term === filterTerm : true));
+    const allCourses = Object.entries(courses).flatMap(([program, courses]) => courses.map((course) => ({ ...course, program })));
+    return allCourses.filter(
+      (course) =>
+        (course.name.toLowerCase().includes(searchTerm.toLowerCase()) || course.code.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (filterTerm ? course.term === filterTerm : true) &&
+        (filterProgram ? course.program === filterProgram : true)
+    );
   };
 
   const filteredCourses = getFilteredCourses();
+  const programs = Object.keys(courses);
 
   return (
     <div>
@@ -77,7 +86,11 @@ function AdmCourses() {
           <Typography variant="h4" gutterBottom sx={{ textAlign: "center", mb: 2, color: "#34405E" }}>
             Software Development Department Courses
           </Typography>
-          <CourseFilter filterTerm={filterTerm} setFilterTerm={setFilterTerm} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+            <ProgramSelect program={filterProgram} setProgram={setFilterProgram} programs={programs} />
+            <TermSelect term={filterTerm} setTerm={setFilterTerm} />
+            <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          </Box>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
             {filteredCourses.map((course) => (
               <CourseCard key={course.code} course={course} onEdit={handleEdit} onDelete={handleDelete} />
@@ -94,15 +107,7 @@ function AdmCourses() {
             <TextField label="Course Code" fullWidth margin="normal" value={editCourse.code} />
             <TextField label="Name" fullWidth margin="normal" value={editCourse.name} onChange={(e) => setEditCourse({ ...editCourse, name: e.target.value })} />
             <TextField label="Description" fullWidth margin="normal" value={editCourse.description} onChange={(e) => setEditCourse({ ...editCourse, description: e.target.value })} />
-            <FormControl fullWidth margin="normal" variant="outlined">
-              <InputLabel>Term</InputLabel>
-              <Select value={editCourse.term} onChange={(e) => setEditCourse({ ...editCourse, term: e.target.value })} label="Term">
-                <MenuItem value="Winter">Winter</MenuItem>
-                <MenuItem value="Spring">Spring</MenuItem>
-                <MenuItem value="Summer">Summer</MenuItem>
-                <MenuItem value="Fall">Fall</MenuItem>
-              </Select>
-            </FormControl>
+            <TermSelect term={editCourse.term} setTerm={(term) => setEditCourse({ ...editCourse, term })} />
             <TextField label="Start Date" fullWidth margin="normal" value={editCourse.startDate} onChange={(e) => setEditCourse({ ...editCourse, startDate: e.target.value })} />
             <TextField label="End Date" fullWidth margin="normal" value={editCourse.endDate} onChange={(e) => setEditCourse({ ...editCourse, endDate: e.target.value })} />
             <TextField label="Time" fullWidth margin="normal" value={editCourse.time} onChange={(e) => setEditCourse({ ...editCourse, time: e.target.value })} />
