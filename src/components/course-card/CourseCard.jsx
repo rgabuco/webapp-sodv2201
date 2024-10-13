@@ -20,7 +20,7 @@ const CourseCard = ({ course, onEdit, onDelete }) => (
         </Box>
       </Typography>
       <Typography variant="body1" color="textSecondary" sx={{ mb: 2 }}>
-        Code: {course.code}
+        Code: {course.code} | Credits: {course.credits} | Prerequisites: {course.prerequisites}
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
         <Box sx={{ flex: 6 }}>
