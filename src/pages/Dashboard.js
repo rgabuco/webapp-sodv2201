@@ -24,12 +24,14 @@ function Dashboard() {
     if (currentUser) {
       setLoggedInUser(currentUser);
 
-      // Check if the user is an admin
-      if (currentUser.isAdmin) {
+      // Explicit check for the isAdmin field
+      if (currentUser.isAdmin === true) {
         setStatus("Admin");
       } else {
         // Check if the student has any courses in the courses array
-        if (currentUser.courses && currentUser.courses.length > 0) {
+        currentUser.courses = currentUser.courses || []; // Ensure courses is an array if undefined
+
+        if (currentUser.courses.length > 0) {
           setStatus("Enrolled");
         } else {
           setStatus("Not Enrolled");
