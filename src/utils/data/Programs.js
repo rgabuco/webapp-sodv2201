@@ -2,7 +2,7 @@
 const programsArray = [
   {
     code: "SDDBVC-2025",
-    name: "Software Development Diploma",
+    name: "Software Development - Diploma",
     description: "A comprehensive two-year diploma program that equips learners with essential software development skills, focusing on web, mobile, and database applications.",
     term: "Winter",
     startDate: "January 10, 2025",
@@ -12,7 +12,7 @@ const programsArray = [
   },
   {
     code: "SDPBVC-2025",
-    name: "Software Development Post-Diploma",
+    name: "Software Development - Post Diploma",
     description: "A comprehensive one-year post-diploma program that equips learners with essential software development skills, focusing on web, mobile, and database applications.",
     term: "Winter",
     startDate: "January 10, 2025",

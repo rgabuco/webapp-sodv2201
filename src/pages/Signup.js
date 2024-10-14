@@ -52,6 +52,7 @@ function Signup() {
     department: "Software Development",
     program: programsArray[0].name,
     isAdmin: "false",
+    courses: [],
   });
 
   const [phoneError, setPhoneError] = useState("");
