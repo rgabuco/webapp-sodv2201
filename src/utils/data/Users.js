@@ -11,6 +11,7 @@ export const usersArray = [
     department: "Software Development",
     program: "Software Development - Diploma",
     isAdmin: false,
+    courses: ["CS101", "CS102", "CS202"],
   },
   {
     id: 2,
@@ -23,6 +24,7 @@ export const usersArray = [
     department: "Software Development",
     program: "Software Development - Post Diploma",
     isAdmin: false,
+    courses: [], // Initialize with an empty array
   },
   {
     id: 3,
@@ -35,6 +37,7 @@ export const usersArray = [
     department: "Software Development",
     program: "Software Development - Diploma",
     isAdmin: true,
+    courses: [], // Initialize with an empty array
   },
   {
     id: 4,
@@ -47,6 +50,7 @@ export const usersArray = [
     department: "Software Development",
     program: "Software Development - Diploma",
     isAdmin: true,
+    courses: [], // Initialize with an empty array
   },
 ];
 
