@@ -6,6 +6,7 @@ import programsArray from "../utils/data/Programs";
 import usersArray from "../utils/data/Users";
 import LoginButton from "../components/login-button/LoginButton";
 import coursesArray from "../utils/data/Courses";
+import messagesArray from "../utils/data/Messages";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -27,13 +28,15 @@ function Login() {
     if (!localStorage.getItem("bvc-users")) {
       localStorage.setItem("bvc-users", JSON.stringify(usersArray));
     }
+    // Check if messages data exists in localStorage
+    if (!localStorage.getItem("bvc-messages")) {
+      localStorage.setItem("bvc-messages", JSON.stringify(messagesArray));
+    }
   }, []);
 
   const handleLogin = () => {
     const users = JSON.parse(localStorage.getItem("bvc-users"));
     const user = users.find((user) => user.username === username);
-    const isAdministrator = user.isAdmin;
-    console.log("user:", user);
 
     if (!user) {
       setUsernameError("Username does not exist.");
@@ -46,6 +49,8 @@ function Login() {
       setUsernameError(""); // Clear username error
       return;
     }
+
+    const isAdministrator = user.isAdmin;
 
     // Handle successful login logic here
     console.log("userLoggedIn ", { username });
