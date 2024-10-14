@@ -40,6 +40,13 @@ function Dashboard() {
     }
   }, []);
 
+  // Function to get color based on status
+  const getStatusColor = () => {
+    if (status === "Admin") return "blue";
+    if (status === "Enrolled") return "green";
+    return "red"; // Not Enrolled
+  };
+
   return (
     <div>
       <Navbar rightMenu={<ProfileMenu />} />
@@ -77,8 +84,20 @@ function Dashboard() {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="h6">Status:</Typography>
-                <Typography>{status}</Typography>
+                <Typography style={{ color: getStatusColor() }}>{status}</Typography>
               </Grid>
+              
+              {/* Enrolled Courses section moved below Program */}
+              {status === "Enrolled" && (
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="h6">Enrolled Courses:</Typography>
+                  <Typography>
+                    {loggedInUser.courses && loggedInUser.courses.length > 0
+                      ? loggedInUser.courses.join(", ")
+                      : "No courses enrolled"}
+                  </Typography>
+                </Grid>
+              )}
             </Grid>
           </Paper>
         ) : (
