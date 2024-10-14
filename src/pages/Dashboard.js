@@ -12,11 +12,11 @@ function Dashboard() {
     const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
     console.log("Stored Users: ", storedUsers); // Debugging log to check users
 
-    // Get the currently logged-in username from userLoggedIn key
+    // Get the currently logged-in username from localStorage
     const currentUsername = localStorage.getItem("userLoggedIn");
     console.log("Current Username (userLoggedIn): ", currentUsername); // Debugging log
 
-    // Get the currently logged-in user by matching username
+    // Get the currently logged-in user by matching username in localStorage
     const currentUser = storedUsers.find((user) => user.username === currentUsername);
     console.log("Logged-in User: ", currentUser); // Debugging log to check the matched user
 
@@ -24,10 +24,16 @@ function Dashboard() {
     if (currentUser) {
       setLoggedInUser(currentUser);
 
-      // Check if the student has any courses added
-      const selectedCourses = JSON.parse(localStorage.getItem("selectedCourses")) || [];
-      if (selectedCourses.length > 0) {
-        setStatus("Enrolled");
+      // Check if the user is an admin
+      if (currentUser.isAdmin) {
+        setStatus("Admin");
+      } else {
+        // Check if the student has any courses in the courses array
+        if (currentUser.courses && currentUser.courses.length > 0) {
+          setStatus("Enrolled");
+        } else {
+          setStatus("Not Enrolled");
+        }
       }
     }
   }, []);
