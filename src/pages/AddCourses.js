@@ -11,12 +11,12 @@ function AddCourses() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterTerm, setFilterTerm] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const [coursesData, setCoursesData] = useState(JSON.parse(localStorage.getItem("bvc-courses")) || {});
   const loggedInUsername = localStorage.getItem("userLoggedIn");
   const usersData = JSON.parse(localStorage.getItem("bvc-users")) || [];
-  const coursesData = JSON.parse(localStorage.getItem("bvc-courses")) || {};
   const loggedInUser = usersData.find((user) => user.username === loggedInUsername);
   const userProgram = loggedInUser?.program;
-  const courses = coursesArray[userProgram] || [];
+  const courses = coursesData[userProgram] || [];
 
   useEffect(() => {
     const usersData = JSON.parse(localStorage.getItem("bvc-users")) || [];
@@ -43,14 +43,16 @@ function AddCourses() {
       }
 
       // Update seatsAvailable in bvc-courses
-      for (const program in coursesData) {
-        const courseIndex = coursesData[program].findIndex((c) => c.code === course.code);
+      const updatedCoursesData = { ...coursesData };
+      for (const program in updatedCoursesData) {
+        const courseIndex = updatedCoursesData[program].findIndex((c) => c.code === course.code);
         if (courseIndex !== -1) {
-          coursesData[program][courseIndex].seatsAvailable -= 1;
-          localStorage.setItem("bvc-courses", JSON.stringify(coursesData));
+          updatedCoursesData[program][courseIndex].seatsAvailable -= 1;
           break;
         }
       }
+      setCoursesData(updatedCoursesData);
+      localStorage.setItem("bvc-courses", JSON.stringify(updatedCoursesData));
 
       console.log(`Course added: ${course.name}`);
     }
@@ -192,9 +194,11 @@ function AddCourses() {
             Maximum Courses Exceeded
           </Typography>
           <Typography sx={{ mt: 2 }}>You have exceeded the maximum of 5 courses to be enrolled.</Typography>
-          <Button onClick={() => setOpenModal(false)} sx={{ mt: 2 }} variant="contained" color="primary">
-            Close
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button onClick={() => setOpenModal(false)} variant="contained" color="primary">
+              Close
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </Container>

@@ -6,11 +6,11 @@ import { Container, Typography, Box, Grid, Card, CardContent, Button, ListItemTe
 function MyCourses() {
   const [myCourses, setMyCourses] = useState([]);
   const [totalCredits, setTotalCredits] = useState(0);
+  const [coursesData, setCoursesData] = useState(JSON.parse(localStorage.getItem("bvc-courses")) || {});
   const loggedInUsername = localStorage.getItem("userLoggedIn");
 
   useEffect(() => {
     const usersData = JSON.parse(localStorage.getItem("bvc-users")) || [];
-    const coursesData = JSON.parse(localStorage.getItem("bvc-courses")) || {};
     const loggedInUser = usersData.find((user) => user.username === loggedInUsername);
 
     if (loggedInUser) {
@@ -27,7 +27,7 @@ function MyCourses() {
       setMyCourses(userCourses);
       calculateTotalCredits(userCourses);
     }
-  }, [loggedInUsername]);
+  }, [loggedInUsername, coursesData]);
 
   useEffect(() => {
     calculateTotalCredits(myCourses);
@@ -48,6 +48,18 @@ function MyCourses() {
       usersData[loggedInUserIndex].courses = updatedCourses.map((course) => course.code);
       localStorage.setItem("bvc-users", JSON.stringify(usersData));
     }
+
+    // Update seatsAvailable in bvc-courses
+    const updatedCoursesData = { ...coursesData };
+    for (const program in updatedCoursesData) {
+      const courseIndex = updatedCoursesData[program].findIndex((c) => c.code === courseToRemove.code);
+      if (courseIndex !== -1) {
+        updatedCoursesData[program][courseIndex].seatsAvailable += 1;
+        break;
+      }
+    }
+    setCoursesData(updatedCoursesData);
+    localStorage.setItem("bvc-courses", JSON.stringify(updatedCoursesData));
   };
 
   return (
@@ -85,30 +97,73 @@ function MyCourses() {
                     <ListItemText
                       primary={
                         <>
-                          <Typography variant="body1">
-                            <strong>Credits:</strong> {course.credits}
-                          </Typography>
-                          <Typography variant="body1">
-                            <strong>Term:</strong> {course.term}
-                          </Typography>
-                          <Typography variant="body1">
-                            <strong>Dates:</strong> {course.startDate} - {course.endDate}
-                          </Typography>
-                          <Typography variant="body1">
-                            <strong>Time:</strong> {course.time} on {course.days}
-                          </Typography>
-                          <Typography variant="body1">
-                            <strong>Campus:</strong> {course.campus}
-                          </Typography>
-                          <Typography variant="body1">
-                            <strong>Delivery Mode:</strong> {course.deliveryMode}
-                          </Typography>
+                          <Grid container>
+                            <Grid item xs={4}>
+                              <Typography variant="body1">
+                                <strong>Credits:</strong>
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Typography variant="body1">{course.credits}</Typography>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                              <Typography variant="body1">
+                                <strong>Term:</strong>
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Typography variant="body1">{course.term}</Typography>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                              <Typography variant="body1">
+                                <strong>Dates:</strong>
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Typography variant="body1">
+                                {course.startDate} - {course.endDate}
+                              </Typography>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                              <Typography variant="body1">
+                                <strong>Time:</strong>
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Typography variant="body1">
+                                {course.time} on {course.days}
+                              </Typography>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                              <Typography variant="body1">
+                                <strong>Campus:</strong>
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Typography variant="body1">{course.campus}</Typography>
+                            </Grid>
+
+                            <Grid item xs={4}>
+                              <Typography variant="body1">
+                                <strong>Delivery Mode:</strong>
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Typography variant="body1">{course.deliveryMode}</Typography>
+                            </Grid>
+                          </Grid>
                         </>
                       }
                     />
-                    <Button variant="contained" color="primary" onClick={() => handleRemoveCourse(course)} sx={{ marginTop: "16px" }}>
-                      Remove
-                    </Button>
+                    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2, mr: 1 }}>
+                      <Button variant="contained" color="primary" onClick={() => handleRemoveCourse(course)}>
+                        Remove
+                      </Button>
+                    </Box>
                   </CardContent>
                 </Card>
               </Grid>
