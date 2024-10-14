@@ -2,21 +2,32 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar/Navbar";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import { Container, Typography, Box, Grid, Card, CardContent, Button, ListItemText } from "@mui/material";
-import usersArray from "../utils/data/Users";
 
 function MyCourses() {
   const [myCourses, setMyCourses] = useState([]);
   const [totalCredits, setTotalCredits] = useState(0);
   const loggedInUsername = localStorage.getItem("userLoggedIn");
 
-  const loggedInUser = usersArray.find((user) => user.username === loggedInUsername);
-  const studentName = loggedInUser ? `${loggedInUser.firstName} ${loggedInUser.lastName}` : "Student";
-
   useEffect(() => {
-    const storedCourses = JSON.parse(localStorage.getItem("selectedCourses")) || [];
-    setMyCourses(storedCourses);
-    calculateTotalCredits(storedCourses);
-  }, []);
+    const usersData = JSON.parse(localStorage.getItem("bvc-users")) || [];
+    const coursesData = JSON.parse(localStorage.getItem("bvc-courses")) || {};
+    const loggedInUser = usersData.find((user) => user.username === loggedInUsername);
+
+    if (loggedInUser) {
+      const userCourses = loggedInUser.courses
+        .map((courseCode) => {
+          for (const program in coursesData) {
+            const course = coursesData[program].find((course) => course.code === courseCode);
+            if (course) return course;
+          }
+          return null;
+        })
+        .filter((course) => course !== null);
+
+      setMyCourses(userCourses);
+      calculateTotalCredits(userCourses);
+    }
+  }, [loggedInUsername]);
 
   useEffect(() => {
     calculateTotalCredits(myCourses);
@@ -30,7 +41,13 @@ function MyCourses() {
   const handleRemoveCourse = (courseToRemove) => {
     const updatedCourses = myCourses.filter((course) => course.code !== courseToRemove.code);
     setMyCourses(updatedCourses);
-    localStorage.setItem("selectedCourses", JSON.stringify(updatedCourses));
+
+    const usersData = JSON.parse(localStorage.getItem("bvc-users")) || [];
+    const loggedInUserIndex = usersData.findIndex((user) => user.username === loggedInUsername);
+    if (loggedInUserIndex !== -1) {
+      usersData[loggedInUserIndex].courses = updatedCourses.map((course) => course.code);
+      localStorage.setItem("bvc-users", JSON.stringify(usersData));
+    }
   };
 
   return (
