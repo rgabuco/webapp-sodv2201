@@ -23,26 +23,35 @@ function Dashboard() {
     const currentUser = storedUsers.find((user) => user.username === currentUsername);
 
     if (currentUser) {
-      setLoggedInUser(currentUser);
+        setLoggedInUser(currentUser);
 
-      if (currentUser.isAdmin === true) {
-        setStatus("Admin");
-        setUpcomingEvents([
-          { date: "2024-10-20", event: "Midterm Exams" },
-          { date: "2024-11-05", event: "Guest Lecture" },
-          { date: "2024-12-01", event: "Final Exams" },
-        ]);
-      } else {
-        currentUser.courses = currentUser.courses || [];
-        if (currentUser.courses.length > 0) {
-          setStatus("Enrolled");
-          generateCourseSchedule(currentUser.courses);
+        // Set the status and upcoming events for both admin and non-admin users
+        if (currentUser.isAdmin === true) {
+            setStatus("Admin");
+            // Admin can see all events
+            setUpcomingEvents([
+                { date: "2024-10-20", event: "Midterm Exams" },
+                { date: "2024-11-05", event: "Guest Lecture" },
+                { date: "2024-12-01", event: "Final Exams" },
+            ]);
         } else {
-          setStatus("Not Enrolled");
+            currentUser.courses = currentUser.courses || [];
+            if (currentUser.courses.length > 0) {
+                setStatus("Enrolled");
+                generateCourseSchedule(currentUser.courses);
+            } else {
+                setStatus("Not Enrolled");
+            }
+            // Non-admin can see the upcoming events but not manage them
+            setUpcomingEvents([
+                { date: "2024-10-20", event: "Midterm Exams" },
+                { date: "2024-11-05", event: "Guest Lecture" },
+                { date: "2024-12-01", event: "Final Exams" },
+            ]);
         }
-      }
     }
-  }, []);
+}, []);
+
 
   const generateCourseSchedule = (courseCodes) => {
     const schedule = {};
@@ -250,13 +259,24 @@ function Dashboard() {
         </Grid>
 
   <Paper elevation={3} sx={{ padding: 2, mt: 2 }}>
-  <Typography variant="h5" sx={{ mb: 2 }}>Welcome!</Typography>
+
   {loggedInUser ? (
     <>
+      <Typography variant="h4" sx={{ mb: 2 }}>Welcome, {loggedInUser.firstName}!</Typography>
       <Typography variant="body1">Name: {loggedInUser.firstName + " " + loggedInUser.lastName}</Typography>
-      <Typography variant="body1">Email: {loggedInUser.email}</Typography>
-      <Typography variant="body1">User: {loggedInUser.isAdmin === true ? "Admin" : "Student"}</Typography>
-      <Typography variant="body1">Status: <span style={{ color: getStatusColor(status) }}>{status}</span></Typography>
+      {status !== "Admin" && (
+    <>
+    <Typography variant="body1">Student ID: {loggedInUser.id}</Typography>
+    <Typography variant="body1">Program: {loggedInUser.program}</Typography>
+    <Typography variant="body1">Department: {loggedInUser.department}</Typography>
+    </>
+)}
+
+
+      <Typography variant="body1">Account Type: {loggedInUser.isAdmin === true ? "Admin" : "Student"}</Typography>
+      {status !== "Admin" && (
+      <Typography variant="body1">Enrollment Status: <span style={{ color: getStatusColor(status) }}>{status}</span></Typography>
+      )}
       {status === "Enrolled" && (
         <>
           <Typography variant="h6" sx={{ mt: 2 }}>Courses Enrolled:</Typography>
@@ -266,7 +286,7 @@ function Dashboard() {
               return (
                 <ListItem key={index}>
                   <Typography variant="body2">
-                    {course ? course.name : `Course not found for code: ${courseCode}`}
+                    {course ? course.code + " - " + course.name + " - " + course.days : `Course not found for code: ${courseCode}`}
                   </Typography>
                 </ListItem>
               );
