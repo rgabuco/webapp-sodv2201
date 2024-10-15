@@ -15,7 +15,7 @@ const coursesArray = {
       days: "Monday, Wednesday",
       campus: "Calgary",
       deliveryMode: "Face to Face",
-      seatsAvailable: 40,
+      seatsAvailable: 39,
       classSize: 40,
     },
     {
@@ -32,7 +32,7 @@ const coursesArray = {
       days: "Tuesday, Thursday",
       campus: "Calgary",
       deliveryMode: "Online Asynchronous",
-      seatsAvailable: 40,
+      seatsAvailable: 39,
       classSize: 40,
     },
     {
@@ -66,7 +66,7 @@ const coursesArray = {
       days: "Tuesday, Thursday",
       campus: "Calgary",
       deliveryMode: "Face to Face",
-      seatsAvailable: 40,
+      seatsAvailable: 39,
       classSize: 40,
     },
     {

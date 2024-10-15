@@ -158,7 +158,7 @@ function StudentList() {
   return (
     <div>
       <Navbar rightMenu={<ProfileMenu />} />
-      <Container maxWidth="lg" sx={{ mt: 5, color: "#34405E" }}>
+      <Container maxWidth="lg" sx={{ mt: 4, color: "#34405E" }}>
         <Typography variant="h4" gutterBottom sx={{ mb: 3, textAlign: "center" }}>
           Student Information List
         </Typography>
@@ -180,7 +180,7 @@ function StudentList() {
 
             <StudentTable filteredUsers={paginatedUsers} columnVisibility={columnVisibility} handleDelete={handleDelete} />
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
               <IconButton onClick={handleFirstPage} disabled={currentPage === 0}>
                 <FirstPage />
               </IconButton>

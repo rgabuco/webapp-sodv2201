@@ -1,118 +1,52 @@
 import React, { useState, useEffect } from "react";
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableRow, IconButton, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, TableHead } from "@mui/material";
 import {
-  Box,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  IconButton,
-  TextField,
-  InputAdornment,
-  MenuItem,
-  Select,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  OutlinedInput,
-  TableHead,
-  Checkbox,
-  ListItemText,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import ClearIcon from "@mui/icons-material/Clear"; // X icon for delete
-import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread"; // Envelope icon for message
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // User icon
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday"; // Date icon
+  Clear as ClearIcon,
+  MarkEmailUnread as MarkEmailUnreadIcon,
+  MarkEmailRead as MarkEmailReadIcon,
+  AccountCircle as AccountCircleIcon,
+  CalendarToday as CalendarTodayIcon,
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
 import Navbar from "../components/navbar/Navbar";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
-import usersArray from "../utils/data/Users";
-
-// Options for multi-select filter
-const filterOptions = [
-  { value: "all", label: "All" },
-  { value: "username", label: "Username" },
-  { value: "message", label: "Message" },
-  { value: "date", label: "Date" },
-];
+import FilterBar from "../components/filter-bar/FilterBar";
 
 function Forms() {
   const [messages, setMessages] = useState([]);
   const [loggedInAdmin, setLoggedInAdmin] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterCriteria, setFilterCriteria] = useState(["all"]); // Default to 'all'
   const [openMessage, setOpenMessage] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const [viewedMessages, setViewedMessages] = useState([]); // Track viewed messages by message `date`
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isReadFilter, setIsReadFilter] = useState(null);
+  const [dateFilter, setDateFilter] = useState("");
 
   useEffect(() => {
     const loggedInUsername = localStorage.getItem("userLoggedIn");
-    const admin = usersArray.find((user) => user.username === loggedInUsername && user.isAdmin);
+    const admin = JSON.parse(localStorage.getItem("bvc-users")).find((user) => user.username === loggedInUsername && user.isAdmin);
 
     if (admin) {
       setLoggedInAdmin(admin.username);
 
-      const storedMessages = JSON.parse(localStorage.getItem("bvc-messages")) || {};
-      const storedViewedMessages = JSON.parse(localStorage.getItem("viewed-messages")) || [];
-
-      if (storedMessages[admin.username]) {
-        setMessages(storedMessages[admin.username]);
-      } else {
-        setMessages([]);
-      }
-
-      // Load viewed messages from localStorage
-      setViewedMessages(storedViewedMessages);
+      const storedMessages = JSON.parse(localStorage.getItem("bvc-messages")) || [];
+      setMessages(storedMessages);
     }
   }, []);
 
   const handleDelete = (index) => {
     const updatedMessages = messages.filter((_, i) => i !== index);
     setMessages(updatedMessages);
-
-    const storedMessages = JSON.parse(localStorage.getItem("bvc-messages")) || {};
-    storedMessages[loggedInAdmin] = updatedMessages;
-    localStorage.setItem("bvc-messages", JSON.stringify(storedMessages));
+    localStorage.setItem("bvc-messages", JSON.stringify(updatedMessages));
   };
-
-  const filteredMessages = messages.filter((msg) => {
-    const query = searchQuery.toLowerCase();
-    if (filterCriteria.includes("all")) {
-      return (
-        msg.username.toLowerCase().includes(query) ||
-        msg.email.toLowerCase().includes(query) || // Include email in search
-        msg.message.toLowerCase().includes(query) ||
-        new Date(msg.date).toLocaleString().includes(query)
-      );
-    }
-    return filterCriteria.some((criteria) => {
-      if (criteria === "username") {
-        return msg.username.toLowerCase().includes(query);
-      } else if (criteria === "message") {
-        return msg.message.toLowerCase().includes(query);
-      } else if (criteria === "date") {
-        return new Date(msg.date).toLocaleString().includes(query);
-      }
-      return false;
-    });
-  });
 
   const handleOpenMessage = (message) => {
     setSelectedMessage(message);
     setOpenMessage(true);
 
-    // Mark the message as viewed and store in localStorage using `date` as the unique identifier
-    if (!viewedMessages.includes(message.date)) {
-      const updatedViewedMessages = [...viewedMessages, message.date];
-      setViewedMessages(updatedViewedMessages);
-
-      // Persist the viewed messages in localStorage
-      localStorage.setItem("viewed-messages", JSON.stringify(updatedViewedMessages));
+    if (!message.isRead) {
+      const updatedMessages = messages.map((msg) => (msg.id === message.id ? { ...msg, isRead: true } : msg));
+      setMessages(updatedMessages);
+      localStorage.setItem("bvc-messages", JSON.stringify(updatedMessages));
     }
   };
 
@@ -121,82 +55,59 @@ function Forms() {
     setSelectedMessage(null);
   };
 
-  const handleFilterChange = (event) => {
-    const { value } = event.target;
-    if (value.includes("all")) {
-      setFilterCriteria(["all"]); // Reset to 'all'
-    } else {
-      setFilterCriteria(typeof value === "string" ? value.split(",") : value);
-    }
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setIsReadFilter(null);
+    setDateFilter("");
   };
+
+  const filteredMessages = messages.filter((msg) => {
+    const query = searchQuery.toLowerCase();
+    const isReadMatch = isReadFilter === null ? true : msg.isRead === isReadFilter;
+    const dateMatch = dateFilter ? new Date(msg.date).toLocaleDateString().includes(dateFilter) : true;
+
+    return (
+      (msg.username.toLowerCase().includes(query) || msg.email.toLowerCase().includes(query) || msg.message.toLowerCase().includes(query) || new Date(msg.date).toLocaleString().includes(query)) &&
+      isReadMatch &&
+      dateMatch
+    );
+  });
 
   return (
     <div>
       <Navbar rightMenu={<ProfileMenu />} />
-      <Box sx={{ maxWidth: 1100, margin: "0 auto", padding: "20px" }}>
+      <Box sx={{ maxWidth: 1100, margin: "0 auto", padding: "20px", mt: 2 }}>
         <Typography variant="h4" sx={{ mb: 3, textAlign: "center", color: "#2B3C5E" }}>
-          Messages
+          Message List
         </Typography>
 
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-          <TextField
-            label="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            sx={{ flex: 2, marginRight: 2, backgroundColor: "#f5f5f5", borderRadius: "5px" }}
-          />
+        <FilterBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          isReadFilter={isReadFilter}
+          setIsReadFilter={setIsReadFilter}
+          dateFilter={dateFilter}
+          setDateFilter={setDateFilter}
+          handleResetFilters={handleResetFilters}
+        />
 
-          {/* Multi-select filter criteria */}
-          <Select
-            multiple
-            value={filterCriteria}
-            onChange={handleFilterChange}
-            input={<OutlinedInput />}
-            renderValue={(selected) =>
-              selected.map((sel) => filterOptions.find((f) => f.value === sel).label).join(", ")
-            }
-            sx={{ flex: 1, backgroundColor: "#f5f5f5", borderRadius: "5px" }}
-            displayEmpty
-            startAdornment={
-              <InputAdornment position="start">
-                <FilterListIcon />
-              </InputAdornment>
-            }
-          >
-            {filterOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                <Checkbox checked={filterCriteria.indexOf(option.value) > -1} />
-                <ListItemText primary={option.label} />
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
-
-        <Box sx={{ borderBottom: "2px solid gray", mb: 2 }}></Box>
-
+        <Box sx={{ mb: 2 }}></Box>
         <TableContainer
           component={Paper}
           sx={{
             boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
             "@media (max-width: 600px)": {
               width: "100%",
-              overflowX: "auto", // Allow horizontal scrolling on smaller screens
+              overflowX: "auto",
             },
           }}
         >
           <Table
             sx={{
-              minWidth: 650, // Minimum width to avoid table shrink
+              minWidth: 650,
               "@media (max-width: 600px)": {
                 "& th": {
-                  display: "none", // Hide headers on small screens
+                  display: "none",
                 },
               },
             }}
@@ -210,7 +121,7 @@ function Forms() {
             >
               <TableRow>
                 <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Username</TableCell>
-                <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Email</TableCell> {/* New Email Column */}
+                <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Email</TableCell>
                 <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Message</TableCell>
                 <TableCell sx={{ color: "#2B3C5E", fontWeight: "bold" }}>Date</TableCell>
                 <TableCell />
@@ -230,30 +141,30 @@ function Forms() {
                     sx={{
                       "&:hover": { backgroundColor: "#f9f9f9" },
                       "@media (max-width: 600px)": {
-                        display: "block", // Display rows as blocks on smaller screens
-                        marginBottom: "10px", // Add space between stacked rows
+                        display: "block",
+                        marginBottom: "10px",
                       },
                     }}
                   >
                     <TableCell>
-                      <AccountCircleIcon sx={{ mr: 1 }} /> {message.username}
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <AccountCircleIcon sx={{ mr: 1 }} /> {message.username}
+                      </Box>
                     </TableCell>
-                    <TableCell>{message.email}</TableCell> {/* New Email Field */}
+                    <TableCell>{message.email}</TableCell>
                     <TableCell>
-                      <IconButton
-                        color="default" // Set to default so it is always gray
-                        onClick={() => handleOpenMessage(message)}
-                        aria-label="view-message"
-                      >
-                        <MarkEmailUnreadIcon />
+                      <IconButton color="default" onClick={() => handleOpenMessage(message)} aria-label="view-message">
+                        {message.isRead ? <MarkEmailReadIcon /> : <MarkEmailUnreadIcon />}
                       </IconButton>
                     </TableCell>
                     <TableCell>
-                      <CalendarTodayIcon sx={{ mr: 1 }} /> {new Date(message.date).toLocaleString()}
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <CalendarTodayIcon sx={{ mr: 1 }} /> {new Date(message.date).toLocaleString()}
+                      </Box>
                     </TableCell>
                     <TableCell>
                       <IconButton color="default" onClick={() => handleDelete(index)} aria-label="delete">
-                        <ClearIcon />
+                        <DeleteIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
