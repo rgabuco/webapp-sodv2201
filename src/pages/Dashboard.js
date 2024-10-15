@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Paper, Grid, List, ListItem, Button, TextField, Chip } from "@mui/material";
+import { Container, Typography, Paper, Grid, List, ListItem, Button, TextField, Chip, IconButton } from "@mui/material";
 import { Calendar } from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
 import Navbar from "../components/navbar/Navbar";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import coursesData from '../utils/data/Courses';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function Dashboard() {
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -40,13 +41,6 @@ function Dashboard() {
           setStatus("Not Enrolled");
         }
       }
-
-      // Set upcoming events for non-admin users
-      setUpcomingEvents([
-        { date: "2024-10-20", event: "Midterm Exams" },
-        { date: "2024-11-05", event: "Guest Lecture" },
-        { date: "2024-12-01", event: "Final Exams" },
-      ]);
     }
   }, []);
 
@@ -100,12 +94,37 @@ function Dashboard() {
     setEventName("");
   };
 
+  const handleDeleteEvent = (date) => {
+    setUpcomingEvents((prevEvents) => prevEvents.filter(event => event.date !== date));
+  };
+
+  const handleAddEvent = () => {
+    if (eventName) {
+      setUpcomingEvents([...upcomingEvents, { date: eventDate, event: eventName }]);
+      setEventName("");
+    }
+  };
+
   const getEventsForDate = (date) => {
     const dateString = date.toISOString().split('T')[0];
     return upcomingEvents.filter(event => event.date === dateString);
   };
 
   const selectedEvents = getEventsForDate(value);
+
+  // Function to determine the color based on the status
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Enrolled":
+        return "green"; // Change this to your preferred color
+      case "Not Enrolled":
+        return "red"; // Change this to your preferred color
+      case "Admin":
+        return "blue"; // Change this to your preferred color
+      default:
+        return "black"; // Default color
+    }
+  };
 
   return (
     <div>
@@ -172,7 +191,12 @@ function Dashboard() {
                       variant="outlined" 
                       color="primary"
                       sx={{ fontSize: '0.7rem', borderRadius: '16px' }}
-                      deleteIcon={loggedInUser?.isAdmin ? <Button size="small" onClick={() => handleEditEvent(event)}>Edit</Button> : null}
+                      deleteIcon={loggedInUser?.isAdmin ? (
+                        <IconButton size="small" onClick={() => handleDeleteEvent(event.date)}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      ) : null}
+                      onClick={() => loggedInUser?.isAdmin && handleEditEvent(event)}
                     />
                   </Grid>
                 ))}
@@ -183,8 +207,8 @@ function Dashboard() {
                   <TextField
                     label="Event Date"
                     value={eventDate}
-                    fullWidth
                     disabled
+                    fullWidth
                     sx={{ mb: 1 }}
                   />
                   <TextField
@@ -199,56 +223,63 @@ function Dashboard() {
                   </Button>
                 </Paper>
               )}
+              {loggedInUser?.isAdmin && (
+                <Paper sx={{ padding: 2, marginTop: 2 }}>
+                  <Typography variant="h6">Add Event</Typography>
+                  <TextField
+                    label="Event Date"
+                    value={eventDate}
+                    onChange={(e) => setEventDate(e.target.value)}
+                    fullWidth
+                    sx={{ mb: 1 }}
+                  />
+                  <TextField
+                    label="Event Name"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
+                    fullWidth
+                    sx={{ mb: 1 }}
+                  />
+                  <Button variant="contained" onClick={handleAddEvent}>
+                    Add
+                  </Button>
+                </Paper>
+              )}
             </Paper>
           </Grid>
         </Grid>
 
-        {loggedInUser ? (
-          <Paper elevation={3} sx={{ padding: 3 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">First Name:</Typography>
-                <Typography>{loggedInUser.firstName}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Last Name:</Typography>
-                <Typography>{loggedInUser.lastName}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Email:</Typography>
-                <Typography>{loggedInUser.email}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Phone:</Typography>
-                <Typography>{loggedInUser.phone}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Department:</Typography>
-                <Typography>{loggedInUser.department}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Program:</Typography>
-                <Typography>{loggedInUser.program}</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Status:</Typography>
-                <Typography variant="body1" sx={{ color: "green" }}>
-                  {status}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h6">Courses Enrolled:</Typography>
-                <Typography>
-                  {loggedInUser.courses.length > 0 ? loggedInUser.courses.join(", ") : "No courses enrolled"}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Paper>
-        ) : (
-          <Typography variant="h6" sx={{ mt: 3 }}>
-            Please log in to view your dashboard.
-          </Typography>
-        )}
+  <Paper elevation={3} sx={{ padding: 2, mt: 2 }}>
+  <Typography variant="h5" sx={{ mb: 2 }}>Welcome!</Typography>
+  {loggedInUser ? (
+    <>
+      <Typography variant="body1">Name: {loggedInUser.firstName + " " + loggedInUser.lastName}</Typography>
+      <Typography variant="body1">Email: {loggedInUser.email}</Typography>
+      <Typography variant="body1">User: {loggedInUser.isAdmin === true ? "Admin" : "Student"}</Typography>
+      <Typography variant="body1">Status: <span style={{ color: getStatusColor(status) }}>{status}</span></Typography>
+      {status === "Enrolled" && (
+        <>
+          <Typography variant="h6" sx={{ mt: 2 }}>Courses Enrolled:</Typography>
+          <List>
+            {loggedInUser.courses.map((courseCode, index) => {
+              const course = findCourseByCode(courseCode);
+              return (
+                <ListItem key={index}>
+                  <Typography variant="body2">
+                    {course ? course.name : `Course not found for code: ${courseCode}`}
+                  </Typography>
+                </ListItem>
+              );
+            })}
+          </List>
+        </>
+      )}
+    </>
+  ) : (
+    <Typography variant="body1">Loading user information...</Typography>
+  )}
+</Paper>
+
       </Container>
     </div>
   );
