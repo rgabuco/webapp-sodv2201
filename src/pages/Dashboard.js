@@ -1,62 +1,210 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Paper, Grid } from "@mui/material";
+import { Container, Typography, Paper, Grid, List, ListItem, Button, TextField, Chip } from "@mui/material";
+import { Calendar } from 'react-calendar';
+import 'react-calendar/dist/Calendar.css'; 
 import Navbar from "../components/navbar/Navbar";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
+import coursesData from '../utils/data/Courses';
 
 function Dashboard() {
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [status, setStatus] = useState("Not Enrolled");
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [courseSchedule, setCourseSchedule] = useState({});
+  const [value, setValue] = useState(new Date());
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [eventDate, setEventDate] = useState("");
+  const [eventName, setEventName] = useState("");
 
   useEffect(() => {
-    // Get all users from localStorage
     const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
-    console.log("Stored Users: ", storedUsers); // Debugging log to check users
-
-    // Get the currently logged-in username from localStorage
     const currentUsername = localStorage.getItem("userLoggedIn");
-    console.log("Current Username (userLoggedIn): ", currentUsername); // Debugging log
-
-    // Get the currently logged-in user by matching username in localStorage
     const currentUser = storedUsers.find((user) => user.username === currentUsername);
-    console.log("Logged-in User: ", currentUser); // Debugging log to check the matched user
 
-    // Set the logged-in user state
     if (currentUser) {
       setLoggedInUser(currentUser);
 
-      // Explicit check for the isAdmin field
       if (currentUser.isAdmin === true) {
         setStatus("Admin");
+        setUpcomingEvents([
+          { date: "2024-10-20", event: "Midterm Exams" },
+          { date: "2024-11-05", event: "Guest Lecture" },
+          { date: "2024-12-01", event: "Final Exams" },
+        ]);
       } else {
-        // Check if the student has any courses in the courses array
-        currentUser.courses = currentUser.courses || []; // Ensure courses is an array if undefined
-
+        currentUser.courses = currentUser.courses || [];
         if (currentUser.courses.length > 0) {
           setStatus("Enrolled");
+          generateCourseSchedule(currentUser.courses);
         } else {
           setStatus("Not Enrolled");
         }
       }
+
+      // Set upcoming events for non-admin users
+      setUpcomingEvents([
+        { date: "2024-10-20", event: "Midterm Exams" },
+        { date: "2024-11-05", event: "Guest Lecture" },
+        { date: "2024-12-01", event: "Final Exams" },
+      ]);
     }
   }, []);
 
-  // Function to get color based on status
-  const getStatusColor = () => {
-    if (status === "Admin") return "blue";
-    if (status === "Enrolled") return "green";
-    return "red"; // Not Enrolled
+  const generateCourseSchedule = (courseCodes) => {
+    const schedule = {};
+    courseCodes.forEach((code) => {
+      const course = findCourseByCode(code);
+      if (course) {
+        const courseStartDate = new Date(course.startDate);
+        const courseEndDate = new Date(course.endDate);
+        for (let d = courseStartDate; d <= courseEndDate; d.setDate(d.getDate() + 1)) {
+          const dateString = d.toISOString().split('T')[0];
+          if (!schedule[dateString]) {
+            schedule[dateString] = [];
+          }
+          schedule[dateString].push(course.name);
+        }
+      }
+    });
+    setCourseSchedule(schedule);
   };
+
+  const findCourseByCode = (code) => {
+    for (const program in coursesData) {
+      const course = coursesData[program].find(course => course.code === code);
+      if (course) {
+        return course;
+      }
+    }
+    return null;
+  };
+
+  const handleDateChange = (date) => {
+    setValue(date);
+  };
+
+  const handleEditEvent = (event) => {
+    setEditingEvent(event);
+    setEventDate(event.date);
+    setEventName(event.event);
+  };
+
+  const handleSaveEvent = () => {
+    setUpcomingEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.date === editingEvent.date ? { ...event, event: eventName } : event
+      )
+    );
+    setEditingEvent(null);
+    setEventDate("");
+    setEventName("");
+  };
+
+  const getEventsForDate = (date) => {
+    const dateString = date.toISOString().split('T')[0];
+    return upcomingEvents.filter(event => event.date === dateString);
+  };
+
+  const selectedEvents = getEventsForDate(value);
 
   return (
     <div>
       <Navbar rightMenu={<ProfileMenu />} />
+
       <Container maxWidth="lg" sx={{ mt: 5, color: "#34405E" }}>
         <Typography variant="h4" gutterBottom sx={{ mb: 3, textAlign: "center" }}>
           Dashboard
         </Typography>
 
+        {/* Centered Calendar and Upcoming Events Section */}
+        <Grid container spacing={2} justifyContent="center" sx={{ mb: 2 }}>
+          <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'right' }}>
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                padding: 0.5, 
+                maxWidth: 650, 
+                width: '100%', 
+                height: '350px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+              <Typography variant="h6" sx={{ mb: 1, fontSize: '0.8rem' }}>Course Schedule</Typography>
+              <Calendar 
+                onChange={handleDateChange} 
+                value={value}
+                sx={{ width: '100%', height: 'auto', margin: 'auto' }} 
+              />
+              <Typography variant="subtitle1" sx={{ mt: 1, fontSize: '0.75rem' }}>
+                Events on {value.toLocaleDateString()}:
+              </Typography>
+              {selectedEvents.length > 0 ? (
+                <List dense>
+                  {selectedEvents.map((event, index) => (
+                    <ListItem key={index} sx={{ padding: 0 }}>
+                      <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>{event.event}</Typography>
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>No events</Typography>
+              )}
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'left' }}>
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                padding: 0.5, 
+                maxWidth: 650, 
+                width: '100%', 
+                height: '350px' 
+              }}>
+              <Typography variant="h6" sx={{ mb: 1, fontSize: '0.8rem' }}>Upcoming Events</Typography>
+              <Grid container spacing={1}>
+                {upcomingEvents.map((event, index) => (
+                  <Grid item key={index}>
+                    <Chip 
+                      label={`${event.date}: ${event.event}`}
+                      variant="outlined" 
+                      color="primary"
+                      sx={{ fontSize: '0.7rem', borderRadius: '16px' }}
+                      deleteIcon={loggedInUser?.isAdmin ? <Button size="small" onClick={() => handleEditEvent(event)}>Edit</Button> : null}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+              {editingEvent && (
+                <Paper sx={{ padding: 2, marginTop: 2 }}>
+                  <Typography variant="h6">Edit Event</Typography>
+                  <TextField
+                    label="Event Date"
+                    value={eventDate}
+                    fullWidth
+                    disabled
+                    sx={{ mb: 1 }}
+                  />
+                  <TextField
+                    label="Event Name"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
+                    fullWidth
+                    sx={{ mb: 1 }}
+                  />
+                  <Button variant="contained" onClick={handleSaveEvent}>
+                    Save
+                  </Button>
+                </Paper>
+              )}
+            </Paper>
+          </Grid>
+        </Grid>
+
         {loggedInUser ? (
-          <Paper elevation={3} sx={{ padding: 4 }}>
+          <Paper elevation={3} sx={{ padding: 3 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <Typography variant="h6">First Name:</Typography>
@@ -84,24 +232,22 @@ function Dashboard() {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="h6">Status:</Typography>
-                <Typography style={{ color: getStatusColor() }}>{status}</Typography>
+                <Typography variant="body1" sx={{ color: "green" }}>
+                  {status}
+                </Typography>
               </Grid>
-              
-              {/* Enrolled Courses section moved below Program */}
-              {status === "Enrolled" && (
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="h6">Enrolled Courses:</Typography>
-                  <Typography>
-                    {loggedInUser.courses && loggedInUser.courses.length > 0
-                      ? loggedInUser.courses.join(", ")
-                      : "No courses enrolled"}
-                  </Typography>
-                </Grid>
-              )}
+              <Grid item xs={12}>
+                <Typography variant="h6">Courses Enrolled:</Typography>
+                <Typography>
+                  {loggedInUser.courses.length > 0 ? loggedInUser.courses.join(", ") : "No courses enrolled"}
+                </Typography>
+              </Grid>
             </Grid>
           </Paper>
         ) : (
-          <Typography align="center">No user data found.</Typography>
+          <Typography variant="h6" sx={{ mt: 3 }}>
+            Please log in to view your dashboard.
+          </Typography>
         )}
       </Container>
     </div>

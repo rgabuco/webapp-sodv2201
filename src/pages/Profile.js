@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Box, TextField, Button, Typography, Card, CardContent, CardActions } from "@mui/material";
+import { Container, Box, TextField, Button, Typography, Card, CardContent, CardActions, Avatar } from "@mui/material";
 import Navbar from "../components/navbar/Navbar";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
 
@@ -14,6 +14,7 @@ function Profile() {
     phone: "",
     department: "",
     program: "",
+    profilePhoto: "", // Add this field for the profile photo
   });
 
   useEffect(() => {
@@ -30,6 +31,23 @@ function Profile() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Check the file size (2MB = 2 * 1024 * 1024 bytes)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("File size exceeds 2 MB. Please upload a smaller file.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, profilePhoto: reader.result }); // Store the image as a base64 string
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleEdit = () => {
@@ -65,11 +83,24 @@ function Profile() {
             }}
           >
             <CardContent>
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
                 <Typography variant="h4" gutterBottom sx={{ color: "#34405E" }}>
                   Profile
                 </Typography>
               </Box>
+              {formData.profilePhoto && (
+                <Avatar 
+                  src={formData.profilePhoto} 
+                  alt="Profile Photo" 
+                  sx={{ width: 100, height: 100, margin: "0 auto", mb: 2, borderRadius: "50%" }} // Circular display
+                />
+              )}
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handleFileChange} 
+                disabled={!isEditing} 
+              />
               <TextField label="Username" name="username" value={formData.username} onChange={handleChange} fullWidth margin="normal" disabled />
               <TextField label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} fullWidth margin="normal" required disabled={!isEditing} sx={{ color: "#34405E" }} />
               <TextField label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} fullWidth margin="normal" required disabled={!isEditing} sx={{ color: "#34405E" }} />
