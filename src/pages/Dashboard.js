@@ -151,20 +151,23 @@ function Dashboard() {
     setEventName("");
   };
 
-  const handleDeleteEvent = (date) => {
-    setUpcomingEvents((prevEvents) => prevEvents.filter(event => event.date !== date));
+  const handleDeleteEvent = (eventDate, eventName) => {
+    setUpcomingEvents((prevEvents) =>
+      prevEvents.filter(event => !(event.date === eventDate && event.event === eventName))
+    );
   };
 
   const handleAddEvent = () => {
     if (eventName && eventDate) {
-      setUpcomingEvents([...upcomingEvents, { date: eventDate.format('YYYY-MM-DD'), event: eventName }]);
+      const eventTime = eventDate.format('HH:mm'); // Format the time as needed
+      setUpcomingEvents([...upcomingEvents, { date: eventDate.format('MM-DD-YYYY'), event: eventName, time: eventTime }]);
       setEventName("");
       setEventDate(dayjs());
     }
-  };
+  };  
 
   const getEventsForDate = (date) => {
-    const dateString = date.format('YYYY-MM-DD');
+    const dateString = date.format('MM-DD-YYYY');
     return upcomingEvents.filter(event => event.date === dateString);
   };
 
@@ -214,10 +217,6 @@ const gauge = [
   }
 ];
 
-  
-
-  
-
   return (
     <div>
       <Navbar rightMenu={<ProfileMenu />} />
@@ -236,7 +235,7 @@ const gauge = [
                 padding: 0.5,
                 maxWidth: 650,
                 width: '100%',
-                height: '370px',
+                height: '400px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -251,80 +250,97 @@ const gauge = [
               <Typography variant="subtitle1" sx={{ mt: 1, fontSize: '0.75rem' }}>
                 Events on {value.format('MMMM D, YYYY')}:
               </Typography>
-              <div style={{ maxHeight: '150px', overflowY: 'auto', width: '100%' }}>
-                {selectedEvents.length > 0 ? (
-                  <List dense>
-                    {selectedEvents.map((event, index) => (
-                      <ListItem key={index} sx={{ padding: 0 }}>
-                        <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>{event.event}</Typography>
-                      </ListItem>
-                    ))}
-                  </List>
-                ) : (
-                  <Typography variant="body2" sx={{ fontSize: '0.7rem' }}>No events</Typography>
-                )}
-              </div>
-            </Paper>
+              <div style={{ maxHeight: '150px', overflowY: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              {selectedEvents.length > 0 ? (
+  <List dense>
+    {selectedEvents.map((event, index) => (
+      <ListItem key={index} sx={{ padding: 0 }}>
+        <Typography variant="body2" sx={{ fontSize: '1rem', textAlign: 'center' }}>
+          {event.event} at {event.time} {/* Include the time here */}
+        </Typography>
+      </ListItem>
+    ))}
+  </List>
+) : (
+  <Typography variant="body2" sx={{ fontSize: '0.7rem', textAlign: 'center' }}>No events</Typography>
+)}
+
+    </div>
+
+  </Paper>
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <Paper
+    elevation={3}
+    sx={{
+      padding: 0.5,
+      maxWidth: 650,
+      width: '100%',
+      height: '400px', // Set a fixed height for the entire section
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    <Typography variant="h6" sx={{ mb: 1, fontSize: '0.8rem', textAlign: 'center' }}>
+      Upcoming Events
+    </Typography>
+    
+    <Box sx={{ flexGrow: 1, overflowY: 'auto' }}> {/* Flex-grow to fill available space */}
+      <Grid container spacing={1}>
+        {upcomingEvents.map((event, index) => (
+          <Grid item key={index}>
+
+    <Chip
+      label={`${event.date}: ${event.event}`}
+      variant="outlined"
+      color="primary"
+      sx={{ fontSize: '0.7rem', borderRadius: '16px' }}
+      deleteIcon={loggedInUser?.isAdmin ? (
+        <IconButton size="small" onClick={() => handleDeleteEvent(event.date, event.event)}>
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+  ) : null}
+  onDelete={loggedInUser?.isAdmin ? () => handleDeleteEvent(event.date, event.event) : undefined}
+  onClick={() => loggedInUser?.isAdmin && handleEditEvent(event)}
+/>
           </Grid>
+        ))}
+      </Grid>
+    </Box>
 
-          <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'left' }}>
-            <Paper
-              elevation={3}
-              sx={{
-                padding: 0.5,
-                maxWidth: 650,
-                width: '100%',
-                height: '370px'
-              }}>
+    {loggedInUser?.isAdmin && (
+      <>
+        <Typography variant="h6" sx={{ mb: 1, mt: 2 }}>
+          Add/Edit Event
+        </Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateTimePicker
+            label="Event Date"
+            value={eventDate}
+            onChange={setEventDate}
+            textField={<TextField />} // Use textField prop instead of renderInput
+          />
+        </LocalizationProvider>
 
-              <Typography variant="h6" sx={{ mb: 1, fontSize: '0.8rem', textAlign: 'center' }}>Upcoming Events</Typography>
-              <Grid container spacing={1}>
-                {upcomingEvents.map((event, index) => (
-                  <Grid item key={index}>
-                    <Chip
-                      label={`${event.date}: ${event.event}`}
-                      variant="outlined"
-                      color="primary"
-                      sx={{ fontSize: '0.7rem', borderRadius: '16px' }}
-                      deleteIcon={loggedInUser?.isAdmin ? (
-                        <IconButton size="small" onClick={() => handleDeleteEvent(event.date)}>
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      ) : null}
-                      onDelete={loggedInUser?.isAdmin ? () => handleDeleteEvent(event.date) : undefined}
-                      onClick={() => loggedInUser?.isAdmin && handleEditEvent(event)}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-
-              {loggedInUser?.isAdmin && (
-                <Paper sx={{ mt: 2, padding: 2 }}>
-                  <Typography variant="h6" sx={{ mb: 1 }}>Add/Edit Event</Typography>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-  <DateTimePicker
-    label="Event Date"
-    value={eventDate}
-    onChange={setEventDate}
-    textField={<TextField />} // Use textField prop instead of renderInput
-  />
-</LocalizationProvider>
-
-                  <TextField
-                    label="Event Name"
-                    value={eventName}
-                    onChange={(e) => setEventName(e.target.value)}
-                    sx={{ mt: 2, width: '100%' }}
-                  />
-                  <Button variant="contained" onClick={editingEvent ? handleSaveEvent : handleAddEvent} sx={{ mt: 1 }}>
-                    {editingEvent ? 'Save Event' : 'Add Event'}
-                  </Button>
-                </Paper>
-              )}
-            </Paper>
-          </Grid>
-        </Grid>
- 
+        <TextField
+          label="Event Name"
+          value={eventName}
+          onChange={(e) => setEventName(e.target.value)}
+          sx={{ mt: 2, width: '100%' }}
+        />
+        <Button
+          variant="contained"
+          onClick={editingEvent ? handleSaveEvent : handleAddEvent}
+          sx={{ mt: 1 }}
+        >
+          {editingEvent ? 'Save Event' : 'Add Event'}
+        </Button>
+      </>
+    )}
+    </Paper>
+  </Grid>
+</Grid>
 
 { /*User Details Section*/}
 <Paper sx={{ padding: 3, mt: 2 }}>
