@@ -46,6 +46,9 @@ function AdmAddCourses() {
   const [program, setProgram] = useState("Software Development - Diploma"); // Default program
   const [openModal, setOpenModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [timeAnchorEl, setTimeAnchorEl] = useState(null);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [tempDays, setTempDays] = useState([]);
   const [error, setError] = useState("");
 
@@ -80,6 +83,23 @@ function AdmAddCourses() {
       days: tempDays.join(", "), // Join the array into a comma-separated string
     }));
     handleMenuClose();
+  };
+
+  const handleTimeMenuOpen = (event) => {
+    setTimeAnchorEl(event.currentTarget);
+  };
+
+  const handleTimeMenuClose = () => {
+    setTimeAnchorEl(null);
+  };
+
+  const handleApplyTime = () => {
+    const formattedTime = `${startTime} - ${endTime}`;
+    setCourseData((prevData) => ({
+      ...prevData,
+      time: formattedTime,
+    }));
+    handleTimeMenuClose();
   };
 
   const isValidDate = (dateString) => {
@@ -119,6 +139,14 @@ function AdmAddCourses() {
 
     const existingCourses = JSON.parse(localStorage.getItem("bvc-courses")) || {};
     const programCourses = existingCourses[program] || [];
+
+    // Check for unique course code
+    const isCodeUnique = !programCourses.some((course) => course.code === courseData.code);
+    if (!isCodeUnique) {
+      setError("Course code must be unique. This course code is already in use.");
+      return;
+    }
+
     programCourses.push(courseData);
     existingCourses[program] = programCourses;
     localStorage.setItem("bvc-courses", JSON.stringify(existingCourses));
@@ -169,13 +197,136 @@ function AdmAddCourses() {
                   <TextField label="Campus" name="campus" value={courseData.campus} onChange={handleChange} fullWidth required />
                 </Box>
                 <Box sx={{ flex: "1 1 45%" }}>
-                  <TextField label="Start Date (YYYY-MM-DD)" name="startDate" value={courseData.startDate} onChange={handleChange} fullWidth required />
+                  <TextField
+                    label="Start Date"
+                    type="date"
+                    name="startDate"
+                    value={courseData.startDate}
+                    onChange={handleChange}
+                    fullWidth
+                    required
+                    InputLabelProps={{
+                      shrink: true,
+                      sx: {
+                        backgroundColor: "white",
+                        paddingRight: "4px",
+                        paddingLeft: "4px",
+                      },
+                    }}
+                  />
                 </Box>
                 <Box sx={{ flex: "1 1 45%" }}>
-                  <TextField label="End Date (YYYY-MM-DD)" name="endDate" value={courseData.endDate} onChange={handleChange} fullWidth required />
+                  <TextField
+                    label="End Date"
+                    type="date"
+                    name="endDate"
+                    value={courseData.endDate}
+                    onChange={handleChange}
+                    fullWidth
+                    required
+                    InputLabelProps={{
+                      shrink: true,
+                      sx: {
+                        backgroundColor: "white",
+                        paddingRight: "4px",
+                        paddingLeft: "4px",
+                      },
+                    }}
+                  />
                 </Box>
                 <Box sx={{ flex: "1 1 45%" }}>
-                  <TextField label="Time" name="time" value={courseData.time} onChange={handleChange} fullWidth required />
+                  <TextField
+                    label="Time"
+                    name="time"
+                    value={courseData.time}
+                    onClick={handleTimeMenuOpen}
+                    fullWidth
+                    required
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                  <Menu anchorEl={timeAnchorEl} open={Boolean(timeAnchorEl)} onClose={handleTimeMenuClose}>
+                    <Box sx={{ p: 2 }}>
+                      <FormControl fullWidth margin="normal">
+                        <TextField
+                          select
+                          label="Start Time"
+                          value={startTime}
+                          onChange={(e) => setStartTime(e.target.value)}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        >
+                          {[
+                            "8:00 AM",
+                            "8:30 AM",
+                            "9:00 AM",
+                            "9:30 AM",
+                            "10:00 AM",
+                            "10:30 AM",
+                            "11:00 AM",
+                            "11:30 AM",
+                            "12:00 PM",
+                            "12:30 PM",
+                            "1:00 PM",
+                            "1:30 PM",
+                            "2:00 PM",
+                            "2:30 PM",
+                            "3:00 PM",
+                            "3:30 PM",
+                            "4:00 PM",
+                            "4:30 PM",
+                            "5:00 PM",
+                          ].map((time) => (
+                            <MenuItem key={time} value={time}>
+                              {time}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </FormControl>
+                      <FormControl fullWidth margin="normal">
+                        <TextField
+                          select
+                          label="End Time"
+                          value={endTime}
+                          onChange={(e) => setEndTime(e.target.value)}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        >
+                          {[
+                            "8:00 AM",
+                            "8:30 AM",
+                            "9:00 AM",
+                            "9:30 AM",
+                            "10:00 AM",
+                            "10:30 AM",
+                            "11:00 AM",
+                            "11:30 AM",
+                            "12:00 PM",
+                            "12:30 PM",
+                            "1:00 PM",
+                            "1:30 PM",
+                            "2:00 PM",
+                            "2:30 PM",
+                            "3:00 PM",
+                            "3:30 PM",
+                            "4:00 PM",
+                            "4:30 PM",
+                            "5:00 PM",
+                          ].map((time) => (
+                            <MenuItem key={time} value={time}>
+                              {time}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </FormControl>
+                      <Button onClick={handleApplyTime} variant="contained" color="primary" sx={{ mt: 2 }}>
+                        Apply
+                      </Button>
+                    </Box>
+                  </Menu>
                 </Box>
                 <Box sx={{ flex: "1 1 45%" }}>
                   <TextField
