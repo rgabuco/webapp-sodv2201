@@ -225,48 +225,72 @@ const gauge = [
         <Typography variant="h4" gutterBottom sx={{ mb: 3, textAlign: "center" }}>
           Dashboard
         </Typography>
+{/* Centered Calendar and Upcoming Events Section */}
+<Grid container spacing={2} justifyContent="center" sx={{ mb: 0.5 }}>
+  <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'right' }}>
+    <Paper
+      elevation={3}
+      sx={{
+        padding: 0.5,
+        maxWidth: 650,
+        width: '100%',
+        height: '400px', // Set a fixed height for the entire section
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between', // Distribute space between the title, calendar, and events list
+        alignItems: 'center',
+      }}
+    >
+      {/* Title */}
+      <Typography variant="h6" sx={{ mb: 1, fontSize: '0.8rem', textAlign: 'center' }}>
+        Course Schedule
+      </Typography>
 
-        {/* Centered Calendar and Upcoming Events Section */}
-        <Grid container spacing={2} justifyContent="center" sx={{ mb: 0.5 }}>
-          <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'right' }}>
-            <Paper
-              elevation={3}
-              sx={{
-                padding: 0.5,
-                maxWidth: 650,
-                width: '100%',
-                height: '400px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <Typography variant="h6" sx={{ mb: 1, fontSize: '0.8rem' }}>Course Schedule</Typography>
-              <Calendar
-                onChange={handleDateChange}
-                value={value.toDate()}
-                sx={{ width: '100%', height: 'auto', margin: 'auto' }}
-              />
-              <Typography variant="subtitle1" sx={{ mt: 1, fontSize: '0.75rem' }}>
-                Events on {value.format('MMMM D, YYYY')}:
-              </Typography>
-              <div style={{ maxHeight: '150px', overflowY: 'auto', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              {selectedEvents.length > 0 ? (
-  <List dense>
-    {selectedEvents.map((event, index) => (
-      <ListItem key={index} sx={{ padding: 0 }}>
-        <Typography variant="body2" sx={{ fontSize: '1rem', textAlign: 'center' }}>
-          {event.event} at {event.time} {/* Include the time here */}
-        </Typography>
-      </ListItem>
-    ))}
-  </List>
-) : (
-  <Typography variant="body2" sx={{ fontSize: '0.7rem', textAlign: 'center' }}>No events</Typography>
-)}
+      {/* Calendar Section */}
+      <Box sx={{ 
+        width: '100%',
+        flexGrow: 1,                // Allow the calendar to grow and fill available space
+        display: 'flex',
+        justifyContent: 'center',   // Center horizontally
+        alignItems: 'center',       // Center vertically
+      }}>
+        <Calendar
+          onChange={handleDateChange}
+          value={value.toDate()}
+          sx={{ width: '100%', height: 'auto' }}
+        />
+      </Box>
 
-    </div>
-
+      {/* Events List */}
+      <Typography variant="subtitle1" sx={{ mt: 1, fontSize: '0.75rem', textAlign: 'center' }}>
+        Events on {value.format('MMMM D, YYYY')}:
+      </Typography>
+      <Box
+        sx={{
+          maxHeight: '150px',
+          overflowY: 'auto',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        {selectedEvents.length > 0 ? (
+          <List dense>
+            {selectedEvents.map((event, index) => (
+              <ListItem key={index} sx={{ padding: 0 }}>
+                <Typography variant="body2" sx={{ fontSize: '1rem', textAlign: 'center' }}>
+                  {event.event} at {event.time}
+                </Typography>
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <Typography variant="body2" sx={{ fontSize: '0.7rem', textAlign: 'center' }}>
+            No events
+          </Typography>
+        )}
+      </Box>
   </Paper>
 </Grid>
 
