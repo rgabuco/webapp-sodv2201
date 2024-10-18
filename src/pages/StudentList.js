@@ -8,8 +8,11 @@ import ColumnPopover from "../components/column-popover/ColumnPopover";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import FirstPage from "@mui/icons-material/FirstPage";
+import usersArray from "../utils/data/Users.js"
 
 function StudentList() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [users, setUsers] = useState(usersArray);
   const [anchorElFilter, setAnchorElFilter] = useState(null);
   const [anchorElSearch, setAnchorElSearch] = useState(null);
   const [anchorElColumns, setAnchorElColumns] = useState(null);
@@ -31,38 +34,34 @@ function StudentList() {
     department: "",
     program: "",
   });
-
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [users, setUsers] = useState([]);
-
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6; // Number of items per page
 
   useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
-    const currentUser = storedUsers.find((user) => user.username === localStorage.getItem("currentUsername"));
+    try {
+      const storedUsers = JSON.parse(localStorage.getItem("bvc-users")) || [];
+      const currentUser = storedUsers.find((user) => user.username === localStorage.getItem("currentUser"));
 
-    if (currentUser && currentUser.isAdmin === "true") {
-      setIsAdmin(true);
+      if (currentUser?.isAdmin) {
+        setIsAdmin(true);
+      }
+
+      const filteredUsers = storedUsers.filter((user) => !user.isAdmin);
+      setUsers(filteredUsers);
+    } catch (error) {
+      console.error("Error retrieving users from local storage:", error);
     }
-
-    // Filter out admin users on initial load
-    const filteredUsers = storedUsers.filter((user) => user.isAdmin !== "true");
-    setUsers(filteredUsers);
   }, []);
 
+  // Filter users based on search and filter criteria
   const filteredUsers = users.filter((student) => {
     return (
       (student.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         student.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         student.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (filterValues.firstName === "" || student.firstName.toLowerCase().includes(filterValues.firstName.toLowerCase())) &&
-      (filterValues.lastName === "" || student.lastName.toLowerCase().includes(filterValues.lastName.toLowerCase())) &&
-      (filterValues.email === "" || student.email.toLowerCase().includes(filterValues.email.toLowerCase())) &&
-      (filterValues.phone === "" || student.phone.toLowerCase().includes(filterValues.phone.toLowerCase())) &&
-      (filterValues.department === "" || student.department.toLowerCase().includes(filterValues.department.toLowerCase())) &&
-      (filterValues.program === "" || student.program.toLowerCase().includes(filterValues.program.toLowerCase()))
+      Object.entries(filterValues).every(([key, value]) =>
+        value === "" || student[key]?.toLowerCase().includes(value.toLowerCase())
+      )
     );
   });
 
@@ -97,13 +96,10 @@ function StudentList() {
   };
 
   const handleSelectAllColumns = (event) => {
-    const newVisibility = {};
     const isChecked = event.target.checked;
-
-    ["firstName", "lastName", "email", "phone", "department", "program"].forEach((column) => {
-      newVisibility[column] = isChecked;
-    });
-
+    const newVisibility = Object.fromEntries(
+      Object.keys(columnVisibility).map((column) => [column, isChecked])
+    );
     setColumnVisibility(newVisibility);
   };
 
@@ -129,28 +125,24 @@ function StudentList() {
     setCurrentPage(0); // Reset to the first page
   };
 
-  // New function to handle student deletion
   const handleDelete = (studentId) => {
     const updatedUsers = users.filter((student) => student.id !== studentId);
     setUsers(updatedUsers);
     localStorage.setItem("bvc-users", JSON.stringify(updatedUsers));
   };
 
-  // Function to go to the next page
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
       setCurrentPage((prev) => prev + 1);
     }
   };
 
-  // Function to go to the previous page
   const handlePrevPage = () => {
     if (currentPage > 0) {
       setCurrentPage((prev) => prev - 1);
     }
   };
 
-  // Function to go to the first page
   const handleFirstPage = () => {
     setCurrentPage(0);
   };
