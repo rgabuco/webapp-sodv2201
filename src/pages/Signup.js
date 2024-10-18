@@ -19,18 +19,19 @@ import {
 } from "@mui/material";
 import Navbar from "../components/navbar/Navbar";
 import programsArray from "../utils/data/Programs";
-//import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import ProfileMenu from "../components/profile-menu/ProfileMenu";
 import LoginButton from "../components/login-button/LoginButton";
 import SuccessfulSignUp from "../components/modal-successful-signup/SuccessfulSignUp";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [openModal, setOpenModal] = useState(false); // State to control modal visibility
-  const [newUserDetails, setNewUserDetails] = useState({}); // State to store new user details
-  const [usernameError, setUsernameError] = useState(""); // State to store username error
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [openModal, setOpenModal] = useState(false);
+  const [newUserDetails, setNewUserDetails] = useState({});
+  const [usernameError, setUsernameError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkUserLoggedIn = () => {
@@ -41,7 +42,7 @@ function Signup() {
     checkUserLoggedIn();
   }, []);
 
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     username: "",
     password: "",
     email: "",
@@ -53,10 +54,9 @@ function Signup() {
     program: programsArray[0].name,
     isAdmin: "false",
     courses: [],
-  });
+  };
 
-  const [phoneError, setPhoneError] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
     const isAdministrator = localStorage.getItem("isAdministrator") === "true";
@@ -93,6 +93,7 @@ function Signup() {
     const newUser = {
       id: existingUsers.length + 1,
       ...formData,
+      isAdmin: formData.isAdmin === "true",
     };
 
     existingUsers.push(newUser);
@@ -106,8 +107,12 @@ function Signup() {
       username: formData.username,
       accountID: newUser.id,
     });
+
+    // Reset formData to initial state
+    setFormData(initialFormData);
+
     console.log("Opening modal...");
-    setOpenModal(true); // This should open the modal
+    setOpenModal(true);
   };
 
   const countryCodes = [
@@ -136,15 +141,66 @@ function Signup() {
                 </Typography>
               </Box>
               <form onSubmit={handleSubmit}>
-                <TextField label="Username" name="username" value={formData.username} onChange={handleChange} fullWidth margin="normal" required error={!!usernameError} helperText={usernameError} />
-                <TextField label="Password" name="password" type="password" value={formData.password} onChange={handleChange} fullWidth margin="normal" required />
-                <TextField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} fullWidth margin="normal" required />
-                <TextField label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} fullWidth margin="normal" required />
-                <TextField label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} fullWidth margin="normal" required />
+                <TextField
+                  label="Username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="normal"
+                  required
+                  error={!!usernameError}
+                  helperText={usernameError}
+                />
+                <TextField
+                  label="Password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="normal"
+                  required
+                />
+                <TextField
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="normal"
+                  required
+                />
+                <TextField
+                  label="First Name"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="normal"
+                  required
+                />
+                <TextField
+                  label="Last Name"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="normal"
+                  required
+                />
                 <Box sx={{ display: "flex", gap: 2 }}>
                   <FormControl fullWidth margin="normal" variant="outlined">
                     <InputLabel>Country Code</InputLabel>
-                    <Select name="countryCode" value={formData.countryCode} onChange={handleChange} label="Country Code" required sx={{ backgroundColor: "white" }}>
+                    <Select
+                      name="countryCode"
+                      value={formData.countryCode}
+                      onChange={handleChange}
+                      label="Country Code"
+                      required
+                      sx={{ backgroundColor: "white" }}
+                    >
                       {countryCodes.map((item) => (
                         <MenuItem key={item.code} value={item.code}>
                           ({item.code}) {item.country}
@@ -152,17 +208,41 @@ function Signup() {
                       ))}
                     </Select>
                   </FormControl>
-                  <TextField label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} fullWidth margin="normal" required error={!!phoneError} helperText={phoneError} />
+                  <TextField
+                    label="Phone Number"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    required
+                    error={!!phoneError}
+                    helperText={phoneError}
+                  />
                 </Box>
                 <FormControl fullWidth margin="normal" variant="outlined">
                   <InputLabel>Department</InputLabel>
-                  <Select name="department" value={formData.department} onChange={handleChange} label="Department" disabled sx={{ backgroundColor: "white" }}>
+                  <Select
+                    name="department"
+                    value={formData.department}
+                    onChange={handleChange}
+                    label="Department"
+                    disabled
+                    sx={{ backgroundColor: "white" }}
+                  >
                     <MenuItem value="Software Development">Software Development</MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl fullWidth margin="normal" variant="outlined">
                   <InputLabel>Program</InputLabel>
-                  <Select name="program" value={formData.program} onChange={handleChange} label="Program" required sx={{ backgroundColor: "white" }}>
+                  <Select
+                    name="program"
+                    value={formData.program}
+                    onChange={handleChange}
+                    label="Program"
+                    required
+                    sx={{ backgroundColor: "white" }}
+                  >
                     {programsArray.map((program) => (
                       <MenuItem key={program.name} value={program.name}>
                         {program.name}
@@ -195,8 +275,8 @@ function Signup() {
         accountType={newUserDetails.accountType}
         username={newUserDetails.username}
         accountID={newUserDetails.accountID}
-        userLoggedIn={userLoggedIn} // Pass userLoggedIn as a prop
-        navigate={navigate} // Pass navigate as a prop
+        userLoggedIn={userLoggedIn}
+        navigate={navigate}
       />
     </div>
   );
