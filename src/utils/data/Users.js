@@ -1,5 +1,5 @@
 // Initial dummy data for users
-export const usersArray = [
+const usersArray = [
   {
     id: 1,
     username: "jdoe",
