@@ -48,8 +48,8 @@ function Signup() {
     email: "",
     firstName: "",
     lastName: "",
+    countryCode: "",
     phone: "",
-    countryCode: "+1",
     department: "Software Development",
     program: programsArray[0].name,
     isAdmin: "false",
@@ -71,9 +71,10 @@ function Signup() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const phoneRegex = /^\d{10}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      setPhoneError("Phone number must be 10 digits.");
+    const phoneRegex = /^\+\d{1,3}\d{10}$/;
+    const combinedPhone = `${formData.countryCode}${formData.phone}`;
+    if (!phoneRegex.test(combinedPhone)) {
+      setPhoneError("Phone number must include country code and be 10 digits long.");
       return;
     }
 
@@ -93,12 +94,15 @@ function Signup() {
     const newUser = {
       id: existingUsers.length + 1,
       ...formData,
+      phone: combinedPhone,
       isAdmin: formData.isAdmin === "true",
     };
 
+    // Remove countryCode from newUser before saving
+    delete newUser.countryCode;
+
     existingUsers.push(newUser);
     localStorage.setItem("bvc-users", JSON.stringify(existingUsers));
-
     console.log("User added:", newUser);
 
     // Store new user details and open the modal
@@ -114,12 +118,6 @@ function Signup() {
     console.log("Opening modal...");
     setOpenModal(true);
   };
-
-  const countryCodes = [
-    { code: "+1", country: "United States/Canada" },
-    { code: "+44", country: "United Kingdom" },
-    { code: "+91", country: "India" },
-  ];
 
   return (
     <div>
@@ -141,108 +139,38 @@ function Signup() {
                 </Typography>
               </Box>
               <form onSubmit={handleSubmit}>
-                <TextField
-                  label="Username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  fullWidth
-                  margin="normal"
-                  required
-                  error={!!usernameError}
-                  helperText={usernameError}
-                />
-                <TextField
-                  label="Password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  fullWidth
-                  margin="normal"
-                  required
-                />
-                <TextField
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  fullWidth
-                  margin="normal"
-                  required
-                />
-                <TextField
-                  label="First Name"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  fullWidth
-                  margin="normal"
-                  required
-                />
-                <TextField
-                  label="Last Name"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  fullWidth
-                  margin="normal"
-                  required
-                />
+                <TextField label="Username" name="username" value={formData.username} onChange={handleChange} fullWidth margin="normal" required error={!!usernameError} helperText={usernameError} />
+                <TextField label="Password" name="password" type="password" value={formData.password} onChange={handleChange} fullWidth margin="normal" required />
+                <TextField label="Email" name="email" type="email" value={formData.email} onChange={handleChange} fullWidth margin="normal" required />
+                <TextField label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} fullWidth margin="normal" required />
+                <TextField label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} fullWidth margin="normal" required />
                 <Box sx={{ display: "flex", gap: 2 }}>
-                  <FormControl fullWidth margin="normal" variant="outlined">
+                  <FormControl fullWidth margin="normal">
                     <InputLabel>Country Code</InputLabel>
-                    <Select
-                      name="countryCode"
-                      value={formData.countryCode}
-                      onChange={handleChange}
-                      label="Country Code"
-                      required
-                      sx={{ backgroundColor: "white" }}
-                    >
-                      {countryCodes.map((item) => (
-                        <MenuItem key={item.code} value={item.code}>
-                          ({item.code}) {item.country}
-                        </MenuItem>
-                      ))}
+                    <Select name="countryCode" value={formData.countryCode} onChange={handleChange} label="Country Code" required>
+                      <MenuItem value="+1">+1 (USA/Canada)</MenuItem>
+                      <MenuItem value="+44">+44 (UK)</MenuItem>
+                      <MenuItem value="+61">+61 (Australia)</MenuItem>
+                      <MenuItem value="+91">+91 (India)</MenuItem>
+                      <MenuItem value="+81">+81 (Japan)</MenuItem>
+                      <MenuItem value="+49">+49 (Germany)</MenuItem>
+                      <MenuItem value="+33">+33 (France)</MenuItem>
+                      <MenuItem value="+86">+86 (China)</MenuItem>
+                      <MenuItem value="+7">+7 (Russia)</MenuItem>
+                      <MenuItem value="+55">+55 (Brazil)</MenuItem>
                     </Select>
                   </FormControl>
-                  <TextField
-                    label="Phone Number"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    required
-                    error={!!phoneError}
-                    helperText={phoneError}
-                  />
+                  <TextField label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} fullWidth margin="normal" required error={!!phoneError} helperText={phoneError} />
                 </Box>
                 <FormControl fullWidth margin="normal" variant="outlined">
                   <InputLabel>Department</InputLabel>
-                  <Select
-                    name="department"
-                    value={formData.department}
-                    onChange={handleChange}
-                    label="Department"
-                    disabled
-                    sx={{ backgroundColor: "white" }}
-                  >
+                  <Select name="department" value={formData.department} onChange={handleChange} label="Department" disabled sx={{ backgroundColor: "white" }}>
                     <MenuItem value="Software Development">Software Development</MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl fullWidth margin="normal" variant="outlined">
                   <InputLabel>Program</InputLabel>
-                  <Select
-                    name="program"
-                    value={formData.program}
-                    onChange={handleChange}
-                    label="Program"
-                    required
-                    sx={{ backgroundColor: "white" }}
-                  >
+                  <Select name="program" value={formData.program} onChange={handleChange} label="Program" required sx={{ backgroundColor: "white" }}>
                     {programsArray.map((program) => (
                       <MenuItem key={program.name} value={program.name}>
                         {program.name}
